@@ -5,28 +5,47 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
-
+    ndkVersion "21.0.6113669"
     defaultConfig {
-        applicationId "ru.rutoken.demoshift"
         minSdkVersion 21
         targetSdkVersion 29
+        versionName "0.3.0"
         versionCode 1
-        versionName "0.3.3"
-
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    lintOptions {
+        abortOnError false
+    }
+    signingConfigs {
+        release {
+            storeFile project.hasProperty("keystorePath") ? file(project.property("keystorePath")) : null
+            storePassword project.findProperty("keystorePass")
+            keyAlias project.findProperty("keyAlias")
+            keyPassword project.findProperty("keyPass")
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            def hasSigningParameters = project.hasProperty("keystorePath") && project.property("keystorePath") != "" &&
+                    project.hasProperty("keyAlias") && project.property("keyAlias") != "" &&
+                    project.hasProperty("keystorePass") &&
+                    project.hasProperty("keyPass")
+            signingConfig hasSigningParameters ? signingConfigs.release : null
         }
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
@@ -34,4 +53,43 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+def requireFileInDirectory(String directory, String file) {
+    if (fileTree(dir: directory, include: '**/' + file).isEmpty()) {
+        throw new GradleException('Not found ' + file + ' in ' + directory + ' directory')
+    }
+}
+
+def copyFile(String file, String sourcePath, String destinationPath) {
+    try {
+        copy {
+            include file
+            from sourcePath
+            into destinationPath
+        }
+    } catch (ignored) {
+        System.println("Could not copy file: " + file)
+    }
+}
+
+def copyJniLibs(String arch, String jniArch) {
+    def jniLibs = "./src/main/jniLibs/$jniArch"
+
+    copyFile('librtpcsc.so', "../../../../pcsc/android-$arch/lib", jniLibs)
+    copyFile('librtpkcs11ecp.so', "../../../android-$arch/lib", jniLibs)
+
+    requireFileInDirectory(jniLibs, 'librtpcsc.so')
+    requireFileInDirectory(jniLibs, 'librtpkcs11ecp.so')
+}
+
+preBuild.doLast {
+    copyJniLibs('armv7a', 'armeabi-v7a')
+    copyJniLibs('arm64', 'arm64-v8a')
+
+    copyFile('pkcs11jna*.jar', "../../../../../../java/samples/lib", "libs")
+    copyFile('rtserviceconnection*.aar', "../../../../libs", "libs")
+
+    requireFileInDirectory('libs', 'pkcs11jna*.jar')
+    requireFileInDirectory('libs', 'rtserviceconnection*.aar')
 }
