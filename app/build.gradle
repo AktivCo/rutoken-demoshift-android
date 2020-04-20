@@ -16,9 +16,6 @@ android {
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    lintOptions {
-        abortOnError false
-    }
     signingConfigs {
         release {
             storeFile project.hasProperty("keystorePath") ? file(project.property("keystorePath")) : null
