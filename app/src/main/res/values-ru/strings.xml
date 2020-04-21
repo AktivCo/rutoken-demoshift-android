@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ДемоСмена</string>
+    <string name="user_position">Должность</string>
+    <string name="user_organization">Организация</string>
+    <string name="user_certificate_expires">Сертификат истекает</string>
+    <string name="field_not_set">&lt;не задано&gt;</string>
+</resources>

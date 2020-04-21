@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">DemoShift</string>
+    <string name="user_position">Position</string>
+    <string name="user_organization">Organization</string>
+    <string name="user_certificate_expires">Certificate expires</string>
+    <string name="field_not_set">&lt;not set&gt;</string>
 </resources>
