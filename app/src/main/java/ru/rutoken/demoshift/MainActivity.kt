@@ -3,6 +3,7 @@ package ru.rutoken.demoshift
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.rutoken.demoshift.databinding.FragmentUserBinding
+import ru.rutoken.demoshift.user.User
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val user = User(
+            0,
             "Иванов Иван Иванович",
             "Генеральный директор",
             "ООО Организация больших и малых закупок",
