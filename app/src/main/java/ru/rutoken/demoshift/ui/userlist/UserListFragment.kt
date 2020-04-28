@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.rutoken.demoshift.databinding.FragmentUserListBinding
 import ru.rutoken.demoshift.user.User
@@ -53,6 +54,11 @@ class UserListFragment : Fragment() {
                 Date()
             )
         )
+
+        binding.addUserButton.setOnClickListener {
+            findNavController().navigate(UserListFragmentDirections.toAddUserFragment())
+        }
+
         return binding.root
     }
 }
