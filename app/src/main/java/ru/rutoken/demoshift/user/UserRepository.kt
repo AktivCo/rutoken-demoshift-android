@@ -7,4 +7,8 @@ interface UserRepository {
     fun getUsers(): LiveData<List<User>>
     fun addUser(user: User)
     fun removeUser(user: User)
+
+    companion object {
+        fun getInstance() = UserRepositoryImpl
+    }
 }

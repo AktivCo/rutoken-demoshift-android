@@ -2,4 +2,5 @@
 <resources>
     <color name="rutokenRed">#DD2233</color>
     <color name="rutokenBlue">#117788</color>
+    <color name="rutokenWhite">#FFFFFF</color>
 </resources>

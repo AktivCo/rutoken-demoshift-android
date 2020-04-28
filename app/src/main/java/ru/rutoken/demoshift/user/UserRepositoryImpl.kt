@@ -20,7 +20,7 @@ object UserRepositoryImpl : UserRepository {
     }
 
     override fun addUser(user: User) {
-        users.add(user.id, user)
+        users.add(user)
         usersLiveData.postValue(users)
     }
 

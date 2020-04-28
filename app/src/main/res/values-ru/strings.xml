@@ -4,4 +4,5 @@
     <string name="user_organization">Организация</string>
     <string name="user_certificate_expires">Сертификат истекает</string>
     <string name="field_not_set">&lt;не задано&gt;</string>
+    <string name="choose_user">Выберите пользователя</string>
 </resources>

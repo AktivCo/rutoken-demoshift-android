@@ -4,4 +4,5 @@
     <string name="user_organization">Organization</string>
     <string name="user_certificate_expires">Certificate expires</string>
     <string name="field_not_set">&lt;not set&gt;</string>
+    <string name="choose_user">Choose user</string>
 </resources>
