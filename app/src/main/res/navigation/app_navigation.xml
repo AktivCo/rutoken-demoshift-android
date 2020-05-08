@@ -9,10 +9,17 @@
         android:id="@+id/userListFragment"
         android:name="ru.rutoken.demoshift.ui.userlist.UserListFragment"
         android:label="fragment_user_list"
-        tools:layout="@layout/fragment_user_list" >
+        tools:layout="@layout/fragment_user_list">
         <action
             android:id="@+id/toAddUserFragment"
             app:destination="@id/addUserFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/toSignFragment"
+            app:destination="@id/signFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
@@ -24,4 +31,10 @@
         android:name="ru.rutoken.demoshift.ui.adduser.AddUserFragment"
         android:label="fragment_add_user"
         tools:layout="@layout/fragment_add_user" />
+
+    <fragment
+        android:id="@+id/signFragment"
+        android:name="ru.rutoken.demoshift.ui.sign.SignFragment"
+        android:label="fragment_sign"
+        tools:layout="@layout/fragment_sign" />
 </navigation>
