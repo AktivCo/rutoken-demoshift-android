@@ -1,4 +1,5 @@
 <resources>
+    <string name="rutoken">Rutoken</string>
     <string name="app_name">DemoShift</string>
     <string name="user_position">Position</string>
     <string name="user_organization">Organization</string>

@@ -1,4 +1,3 @@
 <resources>
-    <dimen name="user_min_height">200dp</dimen>
-    <dimen name="min_margin">8dp</dimen>
+    <dimen name="default_spacing">8dp</dimen>
 </resources>

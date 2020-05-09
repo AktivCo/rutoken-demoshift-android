@@ -1,7 +1,14 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/rutokenRed</item>
-        <item name="colorPrimaryDark">@color/rutokenRed</item>
-        <item name="colorAccent">@color/rutokenRed</item>
+        <item name="colorPrimaryVariant">@color/rutokenRed</item>
+        <item name="colorOnPrimary">@color/rutokenWhite</item>
+        <item name="colorSecondary">@color/rutokenBlue</item>
+        <item name="colorSecondaryVariant">@color/rutokenBlue</item>
+        <item name="colorOnSecondary">@color/rutokenWhite</item>
+        <item name="colorSurface">@color/rutokenWhite</item>
+        <item name="colorOnSurface">@color/rutokenBlue</item>
+        <item name="android:colorBackground">@color/rutokenGray</item>
+        <item name="android:statusBarColor">@color/rutokenRed</item>
     </style>
 </resources>
