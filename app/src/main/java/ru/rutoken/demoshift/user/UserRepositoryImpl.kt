@@ -2,10 +2,42 @@ package ru.rutoken.demoshift.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.*
 
 object UserRepositoryImpl : UserRepository {
     private val users = mutableListOf<User>()
     private val usersLiveData = MutableLiveData<List<User>>()
+
+    init {
+        addUser(
+            User(
+                0,
+                "Иванов Иван Иванович",
+                "Генеральный директор",
+                "ООО Организация больших и малых закупок",
+                Date()
+            )
+        )
+        addUser(
+            User(
+                5,
+                "Петров Иван Иванович",
+                "Заместитель директора",
+                "ООО Организация больших и малых закупок",
+                Date()
+            )
+        )
+        addUser(
+            User(
+                6,
+                "Сидоров Иван Иванович",
+                "Секретарь",
+                "ООО Организация больших и малых закупок",
+                Date()
+            )
+        )
+
+    }
 
     override fun getUser(userId: Int): LiveData<User> {
         val data = MutableLiveData<User>()
@@ -24,9 +56,11 @@ object UserRepositoryImpl : UserRepository {
         usersLiveData.postValue(users)
     }
 
-    override fun removeUser(user: User) {
-        if (!users.remove(user))
-            throw IllegalArgumentException("No user with id ${user.id}")
+    override fun removeUser(userId: Int) {
+        val user =
+            users.getOrNull(userId) ?: throw IllegalArgumentException("No user with id $userId")
+
+        users.remove(user)
         usersLiveData.postValue(users)
     }
 }

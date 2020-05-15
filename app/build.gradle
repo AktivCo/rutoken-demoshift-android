@@ -43,6 +43,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     viewBinding {
         enabled = true
     }
@@ -59,6 +64,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
+    implementation 'androidx.fragment:fragment-ktx:1.2.4'
 
     testImplementation 'junit:junit:4.12'
 
