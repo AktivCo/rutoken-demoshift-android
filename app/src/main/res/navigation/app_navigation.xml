@@ -36,5 +36,19 @@
         android:id="@+id/signFragment"
         android:name="ru.rutoken.demoshift.ui.sign.SignFragment"
         android:label="fragment_sign"
-        tools:layout="@layout/fragment_sign" />
+        tools:layout="@layout/fragment_sign">
+        <action
+            android:id="@+id/toPinFragment"
+            app:destination="@id/pinFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pinFragment"
+        android:name="ru.rutoken.demoshift.ui.pin.PinFragment"
+        android:label="fragment_pin"
+        tools:layout="@layout/fragment_pin" />
 </navigation>
