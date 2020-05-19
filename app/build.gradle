@@ -55,16 +55,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
+    implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
-    implementation 'androidx.fragment:fragment-ktx:1.2.4'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'net.java.dev.jna:jna:5.4.0@aar'
 
     testImplementation 'junit:junit:4.12'
 
@@ -106,7 +107,9 @@ preBuild.doLast {
 
     copyFile('pkcs11jna*.jar', "../../../../../../java/samples/lib", "libs")
     copyFile('rtserviceconnection*.aar', "../../../../libs", "libs")
+    copyFile('pkcs11wrapper*.aar', "../../../../libs", "libs")
 
     requireFileInDirectory('libs', 'pkcs11jna*.jar')
     requireFileInDirectory('libs', 'rtserviceconnection*.aar')
+    requireFileInDirectory('libs', 'pkcs11wrapper*.aar')
 }
