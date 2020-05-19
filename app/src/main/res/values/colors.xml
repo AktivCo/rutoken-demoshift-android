@@ -5,4 +5,6 @@
     <color name="rutokenBlue">#117788</color>
     <color name="rutokenGray">#F5F5F5</color>
     <color name="rutokenWhite">#FFFFFF</color>
+    <color name="rutokenBlack">#212529</color>
+    <color name="rutokenLightBlue">#1ea896</color>
 </resources>

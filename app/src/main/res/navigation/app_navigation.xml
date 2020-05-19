@@ -50,5 +50,31 @@
         android:id="@+id/pinFragment"
         android:name="ru.rutoken.demoshift.ui.pin.PinFragment"
         android:label="fragment_pin"
-        tools:layout="@layout/fragment_pin" />
+        tools:layout="@layout/fragment_pin">
+        <action
+            android:id="@+id/toSignResultFragment"
+            app:destination="@id/signResultFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/signFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signResultFragment"
+        android:name="ru.rutoken.demoshift.ui.sign.SignResultFragment"
+        android:label="fragment_sign_result"
+        tools:layout="@layout/fragment_sign_result">
+        <action
+            android:id="@+id/toUserListFragment"
+            app:destination="@id/userListFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/userListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
 </navigation>

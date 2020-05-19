@@ -7,4 +7,8 @@
     <string name="field_not_set">&lt;не задано&gt;</string>
     <string name="choose_user">Выберите пользователя</string>
     <string name="sign">Подписать</string>
+    <string name="back_to_user_list">К списку пользователей</string>
+    <string name="copied_text">Скопировано в буфер обмена</string>
+    <string name="copy_text">Копировать</string>
+    <string name="error_text">Ошибка</string>
 </resources>
