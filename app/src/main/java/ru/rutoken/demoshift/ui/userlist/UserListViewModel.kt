@@ -8,7 +8,6 @@ import ru.rutoken.demoshift.user.UserRepository
 class UserListViewModel(
     private val repository: UserRepository = UserRepository.getInstance()
 ): ViewModel() {
-
     fun getUser(userId: Int): LiveData<User> = repository.getUser(userId)
 
     fun getUsers(): LiveData<List<User>> = repository.getUsers()
