@@ -18,6 +18,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     signingConfigs {
         release {
             storeFile project.hasProperty("keystorePath") ? file(project.property("keystorePath")) : null
@@ -46,10 +50,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    viewBinding {
-        enabled = true
     }
 }
 
