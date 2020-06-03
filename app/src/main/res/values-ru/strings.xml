@@ -12,4 +12,6 @@
     <string name="copy_text">Копировать</string>
     <string name="error_text">Ошибка</string>
     <string name="add_user">Добавить пользователя</string>
+    <string name="pin_hint">Введите PIN-код</string>
+    <string name="pin_continue">Продолжить</string>
 </resources>

@@ -10,5 +10,26 @@
         <item name="colorOnSurface">@color/rutokenBlue</item>
         <item name="android:colorBackground">@color/rutokenGray</item>
         <item name="android:statusBarColor">@color/rutokenRed</item>
+        <item name="textInputStyle">@style/TextInputLayoutTheme</item>
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+    </style>
+
+    <style name="DialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#888888</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/dialog_button_color_selector</item>
+    </style>
+
+    <style name="TextInputLayoutTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/rutokenBlue</item>
+        <item name="hintTextColor">@color/rutokenBlue</item>
     </style>
 </resources>

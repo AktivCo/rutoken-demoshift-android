@@ -1,3 +1,4 @@
 <resources>
     <dimen name="default_spacing">8dp</dimen>
+    <dimen name="dialog_spacing">24dp</dimen>
 </resources>
