@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentSignResultBinding
+import ru.rutoken.demoshift.ui.sign.SignResultFragmentDirections.toUserListFragment
 
 
 class SignResultFragment : Fragment() {
@@ -42,7 +43,7 @@ class SignResultFragment : Fragment() {
         }
 
         binding.backToUserListButton.setOnClickListener {
-            findNavController().navigate(SignResultFragmentDirections.toUserListFragment())
+            findNavController().navigate(toUserListFragment())
         }
 
         return binding.root

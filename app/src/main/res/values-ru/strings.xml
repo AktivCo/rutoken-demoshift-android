@@ -11,4 +11,5 @@
     <string name="copied_text">Скопировано в буфер обмена</string>
     <string name="copy_text">Копировать</string>
     <string name="error_text">Ошибка</string>
+    <string name="add_user">Добавить пользователя</string>
 </resources>

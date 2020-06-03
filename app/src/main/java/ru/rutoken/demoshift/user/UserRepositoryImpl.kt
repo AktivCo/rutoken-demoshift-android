@@ -1,17 +1,18 @@
 package ru.rutoken.demoshift.user
 
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import java.util.*
 
+@AnyThread
 object UserRepositoryImpl : UserRepository {
-    private val users = mutableListOf<User>()
+    private val users = Collections.synchronizedList(mutableListOf<User>())
     private val usersLiveData = MutableLiveData<List<User>>()
 
     init {
         addUser(
             User(
-                0,
                 "Иванов Иван Иванович",
                 "Генеральный директор",
                 "ООО Организация больших и малых закупок",
@@ -20,7 +21,6 @@ object UserRepositoryImpl : UserRepository {
         )
         addUser(
             User(
-                5,
                 "Петров Иван Иванович",
                 "Заместитель директора",
                 "ООО Организация больших и малых закупок",
@@ -29,14 +29,12 @@ object UserRepositoryImpl : UserRepository {
         )
         addUser(
             User(
-                6,
                 "Сидоров Иван Иванович",
                 "Секретарь",
                 "ООО Организация больших и малых закупок",
                 Date()
             )
         )
-
     }
 
     override fun getUser(userId: Int): LiveData<User> {
