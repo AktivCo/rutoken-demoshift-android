@@ -1,7 +1,7 @@
 package ru.rutoken.demoshift.tokenmanager.slotevent
 
-import ru.rutoken.pkcs11wrapper.impl.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Exception
+import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import java.util.*
 import java.util.concurrent.Executors
 

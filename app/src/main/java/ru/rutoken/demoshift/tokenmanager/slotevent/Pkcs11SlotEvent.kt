@@ -1,6 +1,6 @@
 package ru.rutoken.demoshift.tokenmanager.slotevent
 
-import ru.rutoken.pkcs11wrapper.data.Pkcs11SlotInfo
+import ru.rutoken.pkcs11wrapper.datatype.Pkcs11SlotInfo
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Slot
 
 data class Pkcs11SlotEvent(

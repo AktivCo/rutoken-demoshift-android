@@ -70,6 +70,7 @@ dependencies {
     implementation 'net.java.dev.jna:jna:5.4.0@aar'
     implementation 'org.koin:koin-android:2.1.5'
     implementation 'org.koin:koin-androidx-viewmodel:2.1.5'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
 
     testImplementation 'junit:junit:4.12'
 

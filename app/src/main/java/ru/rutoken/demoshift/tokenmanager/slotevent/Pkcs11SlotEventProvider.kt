@@ -1,9 +1,9 @@
 package ru.rutoken.demoshift.tokenmanager.slotevent
 
 import androidx.annotation.WorkerThread
-import ru.rutoken.pkcs11wrapper.constant.Pkcs11Flag.CKF_TOKEN_PRESENT
-import ru.rutoken.pkcs11wrapper.data.Pkcs11SlotInfo
-import ru.rutoken.pkcs11wrapper.impl.Pkcs11Module
+import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11Flag.CKF_TOKEN_PRESENT
+import ru.rutoken.pkcs11wrapper.datatype.Pkcs11SlotInfo
+import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
@@ -50,10 +50,10 @@ class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
         fun makeFakeSlotEvent(previousEvent: Pkcs11SlotEvent, newEvent: Pkcs11SlotEvent) =
             if (previousEvent.slotInfo.isTokenPresent)
                 previousEvent.copyWithFlags(
-                    previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.value.inv()
+                    previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.asLong.inv()
                 )
             else
-                newEvent.copyWithFlags(newEvent.slotInfo.flags or CKF_TOKEN_PRESENT.value)
+                newEvent.copyWithFlags(newEvent.slotInfo.flags or CKF_TOKEN_PRESENT.asLong)
 
         private fun Pkcs11SlotEvent.copyWithFlags(flags: Long) = Pkcs11SlotEvent(
             slot, Pkcs11SlotInfo(

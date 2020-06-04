@@ -2,25 +2,27 @@ package ru.rutoken.demoshift.pkcs11
 
 import com.sun.jna.Native
 import ru.rutoken.pkcs11jna.RtPkcs11
-import ru.rutoken.pkcs11wrapper.impl.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.lowlevel.jna.Pkcs11JnaLowLevelFactory
-import ru.rutoken.pkcs11wrapper.rutoken.Pkcs11RutokenApi
-import ru.rutoken.pkcs11wrapper.rutoken.constant.Pkcs11RutokenReturnValue
-import ru.rutoken.pkcs11wrapper.rutoken.jna.Pkcs11RutokenJnaLowLevelApi
+import ru.rutoken.pkcs11wrapper.main.Pkcs11BaseModule
+import ru.rutoken.pkcs11wrapper.rutoken.constant.RtPkcs11MechanismType
+import ru.rutoken.pkcs11wrapper.rutoken.constant.RtPkcs11ReturnValue
+import ru.rutoken.pkcs11wrapper.rutoken.jna.RtPkcs11JnaLowLevelApi
+import ru.rutoken.pkcs11wrapper.rutoken.main.RtPkcs11Api
+import ru.rutoken.pkcs11wrapper.rutoken.main.RtPkcs11HighLevelFactory
 
 /**
  * Loads native pkcs11 library and initializes pkcs11wrapper.
  * Use this class as entry point to pkcs11wrapper.
  */
-class RtPkcs11Module(name: String = "rtpkcs11ecp") : Pkcs11Module {
-    private val pkcs11Api: Pkcs11RutokenApi = Pkcs11RutokenApi(
-        Pkcs11RutokenJnaLowLevelApi(
+class RtPkcs11Module(name: String = "rtpkcs11ecp") : Pkcs11BaseModule(
+    RtPkcs11Api(
+        RtPkcs11JnaLowLevelApi(
             Native.load(name, RtPkcs11::class.java),
             Pkcs11JnaLowLevelFactory.Builder()
-                .setReturnValueVendorFactory(Pkcs11RutokenReturnValue.Factory())
+                .setReturnValueVendorFactory(RtPkcs11ReturnValue.Factory())
+                .setMechanismTypeVendorFactory(RtPkcs11MechanismType.Factory())
                 .build()
         )
-    )
-
-    override fun getPkcs11Api(): Pkcs11RutokenApi = pkcs11Api
-}
+    ),
+    RtPkcs11HighLevelFactory()
+)

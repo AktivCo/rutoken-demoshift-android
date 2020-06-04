@@ -6,8 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.common.util.concurrent.SettableFuture
 import ru.rutoken.demoshift.tokenmanager.slotevent.Pkcs11SlotEvent
 import ru.rutoken.demoshift.tokenmanager.slotevent.Pkcs11SlotEventProvider
-import ru.rutoken.pkcs11wrapper.data.Pkcs11InitializeArgs
-import ru.rutoken.pkcs11wrapper.impl.Pkcs11Module
+import ru.rutoken.pkcs11wrapper.datatype.Pkcs11InitializeArgs
+import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
@@ -17,7 +17,7 @@ import java.util.concurrent.Future
 class TokenManager(private val pkcs11Module: Pkcs11Module) :
     Pkcs11SlotEventProvider.Listener,
     DefaultLifecycleObserver {
-    
+
     private val tokens = Collections.synchronizedSet<Pkcs11Token>(mutableSetOf())
     private val listeners = CopyOnWriteArraySet<TokenListener>()
     private var waitTokenFuture: SettableFuture<Pkcs11Token>? = null
