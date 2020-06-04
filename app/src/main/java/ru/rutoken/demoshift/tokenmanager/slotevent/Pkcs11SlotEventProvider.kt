@@ -3,16 +3,17 @@ package ru.rutoken.demoshift.tokenmanager.slotevent
 import androidx.annotation.WorkerThread
 import ru.rutoken.pkcs11wrapper.constant.Pkcs11Flag.CKF_TOKEN_PRESENT
 import ru.rutoken.pkcs11wrapper.data.Pkcs11SlotInfo
+import ru.rutoken.pkcs11wrapper.impl.Pkcs11Module
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
-class Pkcs11SlotEventProvider : AutoCloseable {
+class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
     private val listeners = CopyOnWriteArraySet<Listener>()
     private val slotEventQueue = LinkedBlockingQueue<Pkcs11SlotEvent>()
     private val previousSlotEvent = mutableMapOf<Long, Pkcs11SlotEvent>()
     private val executor = Executors.newSingleThreadExecutor()
-    private val slotEventGenerator = Pkcs11SlotEventGenerator(slotEventQueue)
+    private val slotEventGenerator = Pkcs11SlotEventGenerator(slotEventQueue, pkcs11Module)
 
     init {
         executor.submit {
@@ -48,8 +49,9 @@ class Pkcs11SlotEventProvider : AutoCloseable {
     private companion object {
         fun makeFakeSlotEvent(previousEvent: Pkcs11SlotEvent, newEvent: Pkcs11SlotEvent) =
             if (previousEvent.slotInfo.isTokenPresent)
-                previousEvent.copyWithFlags(previousEvent.slotInfo.flags
-                        and CKF_TOKEN_PRESENT.value.inv())
+                previousEvent.copyWithFlags(
+                    previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.value.inv()
+                )
             else
                 newEvent.copyWithFlags(newEvent.slotInfo.flags or CKF_TOKEN_PRESENT.value)
 

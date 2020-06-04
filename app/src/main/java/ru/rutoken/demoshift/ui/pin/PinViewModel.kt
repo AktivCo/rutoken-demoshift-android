@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-class PinViewModel : ViewModel() {
+class PinViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val _loginError = MutableLiveData<Exception>()
     private val _loginProceed = MutableLiveData<Unit>()
     private var task: Future<*>? = null
@@ -20,7 +20,7 @@ class PinViewModel : ViewModel() {
         task?.cancel(true)
         task = Executors.newSingleThreadExecutor().submit {
             try {
-                TokenManager.getSingleToken().get()
+                tokenManager.getSingleToken().get()
                 _loginProceed.postValue(Unit)
             } catch (e: ExecutionException) {
                 _loginError.postValue(e.cause as? Exception ?: e)

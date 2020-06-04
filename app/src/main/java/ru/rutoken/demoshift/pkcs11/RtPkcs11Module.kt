@@ -12,10 +12,10 @@ import ru.rutoken.pkcs11wrapper.rutoken.jna.Pkcs11RutokenJnaLowLevelApi
  * Loads native pkcs11 library and initializes pkcs11wrapper.
  * Use this class as entry point to pkcs11wrapper.
  */
-object RtPkcs11Module : Pkcs11Module {
+class RtPkcs11Module(name: String = "rtpkcs11ecp") : Pkcs11Module {
     private val pkcs11Api: Pkcs11RutokenApi = Pkcs11RutokenApi(
         Pkcs11RutokenJnaLowLevelApi(
-            Native.load("rtpkcs11ecp", RtPkcs11::class.java),
+            Native.load(name, RtPkcs11::class.java),
             Pkcs11JnaLowLevelFactory.Builder()
                 .setReturnValueVendorFactory(Pkcs11RutokenReturnValue.Factory())
                 .build()

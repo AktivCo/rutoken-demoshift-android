@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.rutoken.demoshift.databinding.FragmentPinBinding
 import ru.rutoken.demoshift.utils.showError
 
@@ -19,7 +19,7 @@ class PinFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val viewModel: PinViewModel by viewModels()
+        val viewModel = getViewModel<PinViewModel>()
 
         binding = FragmentPinBinding.inflate(inflater)
         binding.proceedButton.setOnClickListener { viewModel.login() }
