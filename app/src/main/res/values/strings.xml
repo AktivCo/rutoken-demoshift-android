@@ -10,8 +10,16 @@
     <string name="back_to_user_list">Back to the user list</string>
     <string name="copied_text">Copied to the clipboard</string>
     <string name="copy_text">Copy</string>
-    <string name="error_text">Error</string>
+    <string name="error_text">Something went wrong.\nTry again</string>
     <string name="add_user">Add user</string>
     <string name="pin_hint">Enter PIN</string>
     <string name="pin_continue">Continue</string>
+    <string name="processing">Please wait, processing…</string>
+    <string name="done">Done</string>
+    <string name="waiting_token">Turn on NFC and tap your device by Rutoken NFC-card.\n
+                            \nor\n
+                            \nTurn on Bluetooth on your device and pair it with Rutoken Bluetooth.\n
+                            \nor\n
+                            \nConnect Rutoken via USB to your device.</string>
+    <string name="add_user_ok">User added</string>
 </resources>

@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.rutoken.demoshift.databinding.FragmentUserListBinding
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
@@ -21,7 +21,7 @@ class UserListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         childFragmentManager.setFragmentResultListener(DIALOG_RESULT_KEY, this) { _, bundle ->
             val pin = bundle.getString(PIN_KEY)
-            findNavController().navigate(toAddUserFragment())
+            findNavController().navigate(toAddUserFragment(pin!!))
         }
     }
 
@@ -31,7 +31,7 @@ class UserListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentUserListBinding.inflate(inflater)
-        val viewModel: UserListViewModel by viewModels()
+        val viewModel: UserListViewModel by viewModel()
         val userListAdapter = UserListAdapter(viewModel.getUsers().value ?: mutableListOf())
 
         binding.usersRecyclerView.apply {

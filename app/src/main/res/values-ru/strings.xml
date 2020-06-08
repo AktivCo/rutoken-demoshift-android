@@ -10,8 +10,16 @@
     <string name="back_to_user_list">К списку пользователей</string>
     <string name="copied_text">Скопировано в буфер обмена</string>
     <string name="copy_text">Копировать</string>
-    <string name="error_text">Ошибка</string>
+    <string name="error_text">Что-то пошло не так.\nПопробуйте повторить операцию</string>
     <string name="add_user">Добавить пользователя</string>
     <string name="pin_hint">Введите PIN-код</string>
     <string name="pin_continue">Продолжить</string>
+    <string name="processing">Обмениваюсь данными…</string>
+    <string name="done">Готово</string>
+    <string name="waiting_token">Включите NFC и поднесите NFC-карту к устройству.\n
+                            \nили\n
+                            \nВключите Bluetooth на этом устройстве и свяжите его с Рутокен Bluetooth.\n
+                            \nили\n
+                            \nПодключите Рутокен в USB-разъем.</string>
+    <string name="add_user_ok">Пользователь добавлен</string>
 </resources>

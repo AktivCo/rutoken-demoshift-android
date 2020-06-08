@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import java.util.*
 
 @AnyThread
-object UserRepositoryImpl : UserRepository {
+class UserRepositoryImpl : UserRepository {
     private val users = Collections.synchronizedList(mutableListOf<User>())
     private val usersLiveData = MutableLiveData<List<User>>()
 
