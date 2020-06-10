@@ -23,4 +23,6 @@
                             \nПодключите Рутокен в USB-разъем.</string>
     <string name="add_user_ok">Пользователь добавлен</string>
     <string name="share_document">Поделиться документом</string>
+    <string name="no_certificate">Сертификат с ключевой парой не найдены</string>
+    <string name="more_than_one_certificate">Найдено более одного сертификата</string>
 </resources>

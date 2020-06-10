@@ -4,68 +4,74 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.rutoken.demoshift.R
+import ru.rutoken.demoshift.pkcs11.GostCertificateAndKeyPairFinder
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.user.User
 import ru.rutoken.demoshift.user.UserRepository
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
+import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.*
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 class AddUserViewModel(
     private val context: Context,
     private val tokenManager: TokenManager,
     private val userRepository: UserRepository,
     tokenPin: String
-) :
-    ViewModel() {
+) : ViewModel() {
     private val _status = MutableLiveData<Status>()
-    private val _result = MutableLiveData<Result<Unit>>()
-    private var task: Future<*>? = null
     val status: LiveData<Status> = _status
+
+    private val _result = MutableLiveData<Result<Unit>>()
     val result: LiveData<Result<Unit>> = _result
 
     init {
         addUser(tokenPin)
     }
 
-
-    private fun addUser(tokenPin: String) {
-        task?.cancel(true)
-        task = Executors.newSingleThreadExecutor().submit {
-            try {
-                val token = tokenManager.getSingleToken().get()
-                _status.postValue(Status(context.getString(R.string.processing), true))
-
-                val session = token.openSession(false)
-                session.login(Pkcs11UserType.CKU_USER, tokenPin)
-                session.close()
-
-                val user = User(
-                    "Захаров Захар Захарович",
-                    "CEO",
-                    "ООО Рога и копыта",
-                    Date()
-                )
-                userRepository.addUser(user)
-
-                _status.postValue(Status(context.getString(R.string.done), false))
-                _result.postValue(Result.success(Unit))
-
-            } catch (e: Exception) {
-                val exception = if (e is ExecutionException) (e.cause ?: e) else e
-
-                _status.postValue(Status(context.getString(R.string.error_text), false))
-                _result.postValue(Result.failure(exception))
+    private suspend fun findCertificateAndKeyPair(token: Pkcs11Token, pin: String) =
+        withContext(Dispatchers.IO) {
+            token.openSession(false).use { session ->
+                session.login(Pkcs11UserType.CKU_USER, pin).use {
+                    val certKeys = GostCertificateAndKeyPairFinder.find(session)
+                    check(certKeys.isNotEmpty()) { context.getString(R.string.no_certificate) }
+                    check(certKeys.size == 1) {
+                        context.getString(R.string.more_than_one_certificate)
+                    }
+                    return@withContext certKeys.first()
+                }
             }
         }
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        task?.cancel(true)
+    private fun addUser(tokenPin: String) = viewModelScope.launch {
+        try {
+            val token = tokenManager.getSingleTokenAsync().await()
+            _status.value = Status(context.getString(R.string.processing), true)
+
+            val certificateAndKeyPair = findCertificateAndKeyPair(token, tokenPin)
+
+            val user = User(
+                "Захаров Захар Захарович",
+                "CEO",
+                "ООО Рога и копыта",
+                Date()
+            )
+            userRepository.addUser(user)
+
+            _status.value = Status(context.getString(R.string.done), false)
+            _result.value = Result.success(Unit)
+
+        } catch (e: Exception) {
+            val exception = if (e is ExecutionException) (e.cause ?: e) else e
+
+            _status.value = Status(context.getString(R.string.error_text), false)
+            _result.value = Result.failure(exception)
+        }
     }
 
     data class Status(val message: String, val isProgress: Boolean)

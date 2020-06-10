@@ -23,4 +23,6 @@
                             \nConnect Rutoken via USB to your device.</string>
     <string name="add_user_ok">User added</string>
     <string name="share_document">Share the document</string>
+    <string name="no_certificate">Certificate with a key pair is not found</string>
+    <string name="more_than_one_certificate">More than one certificate found</string>
 </resources>

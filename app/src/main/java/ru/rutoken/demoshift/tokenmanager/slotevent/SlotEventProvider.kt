@@ -1,29 +1,23 @@
 package ru.rutoken.demoshift.tokenmanager.slotevent
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.AnyThread
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11Flag.CKF_TOKEN_PRESENT
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11SlotInfo
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import java.util.concurrent.CopyOnWriteArraySet
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingQueue
 
-class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
+class SlotEventProvider(private val pkcs11Module: Pkcs11Module) {
     private val listeners = CopyOnWriteArraySet<Listener>()
-    private val slotEventQueue = LinkedBlockingQueue<Pkcs11SlotEvent>()
-    private val previousSlotEvent = mutableMapOf<Long, Pkcs11SlotEvent>()
-    private val executor = Executors.newSingleThreadExecutor()
-    private val slotEventGenerator = Pkcs11SlotEventGenerator(slotEventQueue, pkcs11Module)
+    private val channel = Channel<SlotEvent>(Channel.UNLIMITED)
+    private val previousSlotEvent = mutableMapOf<Long, SlotEvent>()
 
-    init {
-        executor.submit {
-            while (!Thread.currentThread().isInterrupted) {
-                try {
-                    handleSlotEvent(slotEventQueue.take())
-                } catch (e: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                }
-            }
+    fun launchEvents(scope: CoroutineScope) = scope.launch {
+        SlotEventGenerator(channel, pkcs11Module).launchGeneration(this)
+
+        while (isActive) {
+            handleSlotEvent(channel.receive())
         }
     }
 
@@ -31,23 +25,20 @@ class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
         listeners.add(listener)
     }
 
-    private fun handleSlotEvent(event: Pkcs11SlotEvent) {
+    private suspend fun handleSlotEvent(event: SlotEvent) {
         previousSlotEvent[event.slot.id]?.let {
             if (it.slotInfo.isTokenPresent == event.slotInfo.isTokenPresent)
                 handleSlotEvent(makeFakeSlotEvent(it, event))
         }
 
         previousSlotEvent[event.slot.id] = event
-        listeners.forEach { it.onPkcs11SlotEvent(event) }
-    }
-
-    override fun close() {
-        slotEventGenerator.close()
-        executor.shutdownNow()
+        withContext(Dispatchers.Default) {
+            listeners.forEach { it.onSlotEvent(event) }
+        }
     }
 
     private companion object {
-        fun makeFakeSlotEvent(previousEvent: Pkcs11SlotEvent, newEvent: Pkcs11SlotEvent) =
+        fun makeFakeSlotEvent(previousEvent: SlotEvent, newEvent: SlotEvent) =
             if (previousEvent.slotInfo.isTokenPresent)
                 previousEvent.copyWithFlags(
                     previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.asLong.inv()
@@ -55,7 +46,7 @@ class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
             else
                 newEvent.copyWithFlags(newEvent.slotInfo.flags or CKF_TOKEN_PRESENT.asLong)
 
-        private fun Pkcs11SlotEvent.copyWithFlags(flags: Long) = Pkcs11SlotEvent(
+        private fun SlotEvent.copyWithFlags(flags: Long) = SlotEvent(
             slot, Pkcs11SlotInfo(
                 slotInfo.slotDescription, slotInfo.manufacturerId,
                 slotInfo.hardwareVersion, slotInfo.firmwareVersion, flags
@@ -63,8 +54,8 @@ class Pkcs11SlotEventProvider(pkcs11Module: Pkcs11Module) : AutoCloseable {
         )
     }
 
+    @AnyThread
     interface Listener {
-        @WorkerThread
-        fun onPkcs11SlotEvent(event: Pkcs11SlotEvent)
+        fun onSlotEvent(event: SlotEvent)
     }
 }
