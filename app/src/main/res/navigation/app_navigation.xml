@@ -11,8 +11,8 @@
         android:label="fragment_user_list"
         tools:layout="@layout/fragment_user_list">
         <action
-            android:id="@+id/toSignFragment"
-            app:destination="@id/signFragment"
+            android:id="@+id/toDocumentFragment"
+            app:destination="@id/documentFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
@@ -23,7 +23,24 @@
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit"/>
+            app:popExitAnim="@anim/fragment_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/documentFragment"
+        android:name="ru.rutoken.demoshift.ui.document.DocumentFragment"
+        android:label="fragment_document"
+        tools:layout="@layout/fragment_document">
+        <argument
+            android:name="user_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/toSignFragment"
+            app:destination="@id/signFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
 
     <fragment
@@ -31,6 +48,15 @@
         android:name="ru.rutoken.demoshift.ui.sign.SignFragment"
         android:label="fragment_sign"
         tools:layout="@layout/fragment_sign">
+        <argument
+            android:name="pin"
+            app:argType="string" />
+        <argument
+            android:name="user_id"
+            app:argType="integer" />
+        <argument
+            android:name="document_uri"
+            app:argType="android.net.Uri" />
         <action
             android:id="@+id/toSignResultFragment"
             app:destination="@id/signResultFragment"
@@ -38,14 +64,17 @@
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit"
-            app:popUpTo="@id/signFragment" />
+            app:popUpTo="@id/documentFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/signResultFragment"
-        android:name="ru.rutoken.demoshift.ui.sign.SignResultFragment"
+        android:name="ru.rutoken.demoshift.ui.signresult.SignResultFragment"
         android:label="fragment_sign_result"
         tools:layout="@layout/fragment_sign_result">
+        <argument
+            android:name="signature"
+            app:argType="string" />
         <action
             android:id="@+id/toUserListFragment"
             app:destination="@id/userListFragment"
@@ -61,7 +90,7 @@
         android:id="@+id/addUserFragment"
         android:name="ru.rutoken.demoshift.ui.adduser.AddUserFragment"
         android:label="fragment_add_user"
-        tools:layout="@layout/fragment_add_user" >
+        tools:layout="@layout/fragment_add_user">
         <argument
             android:name="pin"
             app:argType="string" />
@@ -73,7 +102,7 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/userListFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

@@ -6,6 +6,5 @@
     android:layout_height="match_parent"
     tools:context=".ui.adduser.AddUserFragment">
 
-    <include
-        layout="@layout/work_progress" />
+    <include layout="@layout/work_progress" />
 </androidx.constraintlayout.widget.ConstraintLayout>

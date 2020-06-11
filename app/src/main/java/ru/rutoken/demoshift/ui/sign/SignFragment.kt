@@ -1,27 +1,24 @@
 package ru.rutoken.demoshift.ui.sign
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import androidx.navigation.fragment.navArgs
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
+import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentSignBinding
-import ru.rutoken.demoshift.ui.pin.PinDialogFragment
-import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
-import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
+import ru.rutoken.demoshift.databinding.WorkProgressBinding
 import ru.rutoken.demoshift.ui.sign.SignFragmentDirections.toSignResultFragment
-import ru.rutoken.demoshift.utils.createFileSharingIntent
+import ru.rutoken.demoshift.utils.asReadableText
 
 
 class SignFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        childFragmentManager.setFragmentResultListener(DIALOG_RESULT_KEY, this) { _, bundle ->
-            val pin = bundle.getString(PIN_KEY)
-            findNavController().navigate(toSignResultFragment())
-        }
-    }
+    private lateinit var workProgressBinding: WorkProgressBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,16 +26,33 @@ class SignFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSignBinding.inflate(inflater)
-        val signDocument = "sign_document.pdf"
-        binding.signPdfView.fromAsset(signDocument)
-            .scrollHandle(DefaultScrollHandle(requireContext()))
-            .onLongPress { startActivity(createFileSharingIntent(signDocument, requireContext())) }
-            .load()
-
-        binding.signButton.setOnClickListener {
-            PinDialogFragment().show(childFragmentManager, null)
-        }
+        workProgressBinding = WorkProgressBinding.bind(binding.root)
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val args: SignFragmentArgs by navArgs()
+        val viewModel: SignViewModel =
+            getViewModel(parameters = { parametersOf(args.pin, args.userId, args.documentUri) })
+
+        viewModel.status.observe(viewLifecycleOwner, Observer { status ->
+            status.message?.let { workProgressBinding.statusTextView.text = it }
+
+            workProgressBinding.progressBar.visibility =
+                if (status.isProgress) View.VISIBLE else View.INVISIBLE
+        })
+
+        viewModel.result.observe(viewLifecycleOwner, Observer { result ->
+            if (result.isSuccess) {
+                findNavController().navigate(toSignResultFragment(result.getOrNull()!!))
+            } else {
+                val exceptionMessage = (result.exceptionOrNull() as Exception).message.orEmpty()
+                workProgressBinding.statusTextView.text =
+                    result.exceptionOrNull()?.asReadableText(requireContext())
+                        ?: "${getString(R.string.error_text)}\n\n" + exceptionMessage
+            }
+        })
     }
 }

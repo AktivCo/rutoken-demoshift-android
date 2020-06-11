@@ -1,12 +1,33 @@
 package ru.rutoken.demoshift.ui.sign
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.rutoken.demoshift.R
+import ru.rutoken.demoshift.tokenmanager.TokenManager
+import ru.rutoken.demoshift.utils.Status
+import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
+import java.util.concurrent.ExecutionException
 
 
-class SignViewModel : ViewModel() {
-    private val signResult = MutableLiveData(signResult())
+class SignViewModel(
+    private val context: Context,
+    private val tokenManager: TokenManager,
+    tokenPin: String,
+    userId: Int,
+    documentUri: Uri
+) : ViewModel() {
+    private val _status = MutableLiveData<Status>()
+    val status: LiveData<Status> = _status
+
+    private val _result = MutableLiveData<Result<String>>()
+    val result: LiveData<Result<String>> = _result
 
     private fun signResult() =
         """
@@ -15,5 +36,30 @@ class SignViewModel : ViewModel() {
             -----END CMS-----
         """.trimIndent()
 
-    fun getSignResult(): LiveData<String> = signResult
+    init {
+        sign(tokenPin)
+    }
+
+    private fun sign(tokenPin: String) = viewModelScope.launch {
+        try {
+            val token = tokenManager.getSingleTokenAsync().await()
+            _status.value = Status(context.getString(R.string.processing), true)
+
+            withContext(Dispatchers.IO) {
+                token.openSession(false).use { session ->
+                    session.login(Pkcs11UserType.CKU_USER, tokenPin)
+                }
+            }
+
+            // TODO: sign
+
+            _status.value = Status(context.getString(R.string.done), false)
+            _result.value = Result.success(signResult())
+        } catch (e: Exception) {
+            val exception = if (e is ExecutionException) (e.cause ?: e) else e
+
+            _status.value = Status(null, false)
+            _result.value = Result.failure(exception)
+        }
+    }
 }

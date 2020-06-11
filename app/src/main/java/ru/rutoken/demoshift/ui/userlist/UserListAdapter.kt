@@ -7,9 +7,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentUserBinding
+import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toDocumentFragment
 import ru.rutoken.demoshift.user.User
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class UserListAdapter(var users: List<User>) :
     RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
@@ -31,7 +33,7 @@ class UserListAdapter(var users: List<User>) :
                 view.context.getString(R.string.field_not_set)
 
         binding.userCardView.setOnClickListener {
-            view.findNavController().navigate(UserListFragmentDirections.toSignFragment())
+            view.findNavController().navigate(toDocumentFragment(user.id))
         }
     }
 

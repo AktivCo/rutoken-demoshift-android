@@ -1,4 +1,4 @@
-package ru.rutoken.demoshift.ui.sign
+package ru.rutoken.demoshift.ui.signresult
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -8,13 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentSignResultBinding
-import ru.rutoken.demoshift.ui.sign.SignResultFragmentDirections.toUserListFragment
+import ru.rutoken.demoshift.ui.signresult.SignResultFragmentDirections.toUserListFragment
 
 
 class SignResultFragment : Fragment() {
@@ -24,11 +23,8 @@ class SignResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSignResultBinding.inflate(inflater)
-        val viewModel: SignViewModel by viewModels()
-
-        viewModel.getSignResult().observe(viewLifecycleOwner, Observer {
-            binding.signResultTextView.text = it
-        })
+        val args: SignResultFragmentArgs by navArgs()
+        binding.signResultTextView.text = args.signature
 
         binding.signResultTextView.setOnLongClickListener {
             val manager =

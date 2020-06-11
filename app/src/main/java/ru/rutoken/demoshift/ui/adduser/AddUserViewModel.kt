@@ -21,9 +21,11 @@ import ru.rutoken.demoshift.utils.BusinessRuleCase.CERTIFICATE_NOT_FOUND
 import ru.rutoken.demoshift.utils.BusinessRuleCase.MORE_THAN_ONE_CERTIFICATE
 import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
 import ru.rutoken.demoshift.utils.BusinessRuleException
+import ru.rutoken.demoshift.utils.Status
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
+
 
 class AddUserViewModel(
     private val context: Context,
@@ -121,6 +123,4 @@ class AddUserViewModel(
         val rdn = subject.rdNs.find { it.first.type == type }
         return rdn?.first?.value?.toString()
     }
-
-    data class Status(val message: String?, val isProgress: Boolean)
 }
