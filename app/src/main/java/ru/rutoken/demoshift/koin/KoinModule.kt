@@ -16,6 +16,6 @@ val koinModule = module {
     single { RtPkcs11Module() } bind Pkcs11Module::class
     single { TokenManager(get()) }
     single<UserRepository> { UserRepositoryImpl() }
-    viewModel { AddUserViewModel(androidContext(), get(), get()) }
+    viewModel { (tokenPin: String) -> AddUserViewModel(androidContext(), get(), get(), tokenPin) }
     viewModel { UserListViewModel(get()) }
 }

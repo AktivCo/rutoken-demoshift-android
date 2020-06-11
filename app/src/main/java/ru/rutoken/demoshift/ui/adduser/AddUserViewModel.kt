@@ -17,7 +17,8 @@ import java.util.concurrent.Future
 class AddUserViewModel(
     private val context: Context,
     private val tokenManager: TokenManager,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    tokenPin: String
 ) :
     ViewModel() {
     private val _status = MutableLiveData<Status>()
@@ -27,8 +28,7 @@ class AddUserViewModel(
     val result: LiveData<Result<Unit>> = _result
 
     init {
-        // TODO: use pin from AddUserFragment
-        addUser("12345678")
+        addUser(tokenPin)
     }
 
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentAddUserBinding
 import ru.rutoken.demoshift.databinding.WorkProgressBinding
@@ -33,7 +34,7 @@ class AddUserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args: AddUserFragmentArgs by navArgs()
-        val viewModel: AddUserViewModel = getViewModel()
+        val viewModel: AddUserViewModel = getViewModel(parameters = { parametersOf(args.pin) })
 
         viewModel.status.observe(viewLifecycleOwner, Observer { status ->
             workProgressBinding.statusTextView.text = status.message
