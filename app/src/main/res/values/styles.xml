@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/rutokenRed</item>
         <item name="colorPrimaryVariant">@color/rutokenRed</item>
         <item name="colorOnPrimary">@color/rutokenWhite</item>
