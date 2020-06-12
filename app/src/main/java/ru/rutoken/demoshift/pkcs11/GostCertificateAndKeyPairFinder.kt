@@ -25,10 +25,13 @@ object GostCertificateAndKeyPairFinder {
             val x509CertificateHolder =
                 X509CertificateHolder(certificate.getValueAttributeValue(session).byteArrayValue)
 
+            val keyPair = findKeyPairByCertificate(session, x509CertificateHolder)
+
             result.add(
                 GostCertificateAndKeyPair(
                     x509CertificateHolder,
-                    findKeyPairByCertificate(session, x509CertificateHolder)
+                    keyPair,
+                    keyPair.publicKey.getIdAttributeValue(session).byteArrayValue
                 )
             )
         }
@@ -72,5 +75,6 @@ object GostCertificateAndKeyPairFinder {
 
 data class GostCertificateAndKeyPair(
     val certificate: X509CertificateHolder,
-    val keyPair: Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject>
+    val keyPair: Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject>,
+    val ckaId: ByteArray
 )

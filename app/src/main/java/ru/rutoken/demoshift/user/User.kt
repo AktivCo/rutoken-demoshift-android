@@ -5,9 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger
 
 data class User(
     val fullName: String,
-    val position: String? = null,
-    val organization: String? = null,
-    val certificateExpires: Date? = null
+    val position: String?,
+    val organization: String?,
+    val certificateExpires: Date?,
+    val certificateDerValue: ByteArray,
+    val ckaId: ByteArray,
+    val tokenSerialNumber: String
 ) {
     val id = getIndex()
 

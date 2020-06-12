@@ -25,4 +25,7 @@
     <string name="share_document">Поделиться документом</string>
     <string name="no_certificate">Сертификат с ключевой парой не найдены</string>
     <string name="more_than_one_certificate">Найдено более одного сертификата</string>
+    <string name="multivalued_rdn">Несколько значений RDN с одинаковым типом</string>
+    <string name="rdn_not_found">Не найдены подходящие RDN</string>
+    <string name="user_dup">Пользователь с таким токеном уже зарегистрирован</string>
 </resources>

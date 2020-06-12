@@ -10,33 +10,6 @@ class UserRepositoryImpl : UserRepository {
     private val users = Collections.synchronizedList(mutableListOf<User>())
     private val usersLiveData = MutableLiveData<List<User>>()
 
-    init {
-        addUser(
-            User(
-                "Иванов Иван Иванович",
-                "Генеральный директор",
-                "ООО Организация больших и малых закупок",
-                Date()
-            )
-        )
-        addUser(
-            User(
-                "Петров Иван Иванович",
-                "Заместитель директора",
-                "ООО Организация больших и малых закупок",
-                Date()
-            )
-        )
-        addUser(
-            User(
-                "Сидоров Иван Иванович",
-                "Секретарь",
-                "ООО Организация больших и малых закупок",
-                Date()
-            )
-        )
-    }
-
     override fun getUser(userId: Int): LiveData<User> {
         val data = MutableLiveData<User>()
         data.postValue(
