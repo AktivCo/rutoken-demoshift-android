@@ -22,4 +22,5 @@
                             \nor\n
                             \nConnect Rutoken via USB to your device.</string>
     <string name="add_user_ok">User added</string>
+    <string name="share_document">Share the document</string>
 </resources>

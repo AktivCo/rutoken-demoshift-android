@@ -1,9 +1,7 @@
 package ru.rutoken.demoshift.ui.sign
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
@@ -13,6 +11,7 @@ import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
 import ru.rutoken.demoshift.ui.sign.SignFragmentDirections.toSignResultFragment
+import ru.rutoken.demoshift.utils.createFileSharingIntent
 
 
 class SignFragment : Fragment() {
@@ -30,8 +29,10 @@ class SignFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSignBinding.inflate(inflater)
-        binding.signPdfView.fromAsset("sign_document.pdf")
+        val signDocument = "sign_document.pdf"
+        binding.signPdfView.fromAsset(signDocument)
             .scrollHandle(DefaultScrollHandle(requireContext()))
+            .onLongPress { startActivity(createFileSharingIntent(signDocument, requireContext())) }
             .load()
 
         binding.signButton.setOnClickListener {
