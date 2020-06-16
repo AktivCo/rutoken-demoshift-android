@@ -15,7 +15,7 @@ import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentAddUserBinding
 import ru.rutoken.demoshift.databinding.WorkProgressBinding
 import ru.rutoken.demoshift.ui.adduser.AddUserFragmentDirections.toUserListFragment
-import ru.rutoken.demoshift.utils.showError
+import ru.rutoken.demoshift.utils.asReadableText
 
 class AddUserFragment : Fragment() {
     private lateinit var workProgressBinding: WorkProgressBinding
@@ -37,7 +37,7 @@ class AddUserFragment : Fragment() {
         val viewModel: AddUserViewModel = getViewModel(parameters = { parametersOf(args.pin) })
 
         viewModel.status.observe(viewLifecycleOwner, Observer { status ->
-            workProgressBinding.statusTextView.text = status.message
+            status.message?.let { workProgressBinding.statusTextView.text = it }
 
             workProgressBinding.progressBar.visibility =
                 if (status.isProgress) View.VISIBLE else View.INVISIBLE
@@ -49,10 +49,10 @@ class AddUserFragment : Fragment() {
                     .show()
                 findNavController().navigate(toUserListFragment())
             } else {
-                showError(
-                    workProgressBinding.statusTextView,
-                    result.exceptionOrNull() as Exception
-                )
+                val exceptionMessage = (result.exceptionOrNull() as Exception).message.orEmpty()
+                workProgressBinding.statusTextView.text =
+                    result.exceptionOrNull()?.asReadableText(requireContext())
+                        ?: "${getString(R.string.error_text)}\n\n" + exceptionMessage
             }
         })
     }

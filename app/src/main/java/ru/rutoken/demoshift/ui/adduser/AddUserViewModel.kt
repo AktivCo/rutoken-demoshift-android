@@ -17,6 +17,10 @@ import ru.rutoken.demoshift.pkcs11.GostCertificateAndKeyPairFinder
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.user.User
 import ru.rutoken.demoshift.user.UserRepository
+import ru.rutoken.demoshift.utils.BusinessRuleCase.CERTIFICATE_NOT_FOUND
+import ru.rutoken.demoshift.utils.BusinessRuleCase.MORE_THAN_ONE_CERTIFICATE
+import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
+import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
@@ -46,8 +50,10 @@ class AddUserViewModel(
             val serialNumber = getTokenSerial(token)
 
             // FIXME: check whether using LiveData with DB will be ok
-            check(userRepository.getUsers().value?.none { it.tokenSerialNumber == serialNumber }
-                ?: true) { context.getString(R.string.user_dup) }
+            if (userRepository.getUsers().value.orEmpty().any {
+                    it.tokenSerialNumber == serialNumber
+                })
+                throw BusinessRuleException(USER_DUPLICATES)
 
             userRepository.addUser(makeUser(certificateAndKeyPair, serialNumber))
 
@@ -57,7 +63,7 @@ class AddUserViewModel(
         } catch (e: Exception) {
             val exception = if (e is ExecutionException) (e.cause ?: e) else e
 
-            _status.value = Status(context.getString(R.string.error_text), false)
+            _status.value = Status(null, false)
             _result.value = Result.failure(exception)
         }
     }
@@ -68,10 +74,11 @@ class AddUserViewModel(
                 session.login(Pkcs11UserType.CKU_USER, pin).use {
                     val certKeys = GostCertificateAndKeyPairFinder.find(session)
 
-                    check(certKeys.isNotEmpty()) { context.getString(R.string.no_certificate) }
-                    check(certKeys.size == 1) {
-                        context.getString(R.string.more_than_one_certificate)
-                    }
+                    if (certKeys.isEmpty())
+                        throw BusinessRuleException(CERTIFICATE_NOT_FOUND)
+
+                    if (certKeys.size != 1)
+                        throw BusinessRuleException(MORE_THAN_ONE_CERTIFICATE)
 
                     return@withContext certKeys.first()
                 }
@@ -115,5 +122,5 @@ class AddUserViewModel(
         return rdn?.first?.value?.toString()
     }
 
-    data class Status(val message: String, val isProgress: Boolean)
+    data class Status(val message: String?, val isProgress: Boolean)
 }
