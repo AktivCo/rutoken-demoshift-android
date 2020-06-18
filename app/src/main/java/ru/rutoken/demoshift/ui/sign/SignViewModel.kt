@@ -11,8 +11,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.tokenmanager.TokenManager
+import ru.rutoken.demoshift.utils.BusinessRuleCase.FILE_UNAVAILABLE
+import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.demoshift.utils.Status
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
+import java.io.FileNotFoundException
+import java.io.InputStream
 import java.util.concurrent.ExecutionException
 
 
@@ -37,10 +41,10 @@ class SignViewModel(
         """.trimIndent()
 
     init {
-        sign(tokenPin)
+        sign(tokenPin, documentUri)
     }
 
-    private fun sign(tokenPin: String) = viewModelScope.launch {
+    private fun sign(tokenPin: String, documentUri: Uri) = viewModelScope.launch {
         try {
             val token = tokenManager.getSingleTokenAsync().await()
             _status.value = Status(context.getString(R.string.processing), true)
@@ -48,6 +52,7 @@ class SignViewModel(
             withContext(Dispatchers.IO) {
                 token.openSession(false).use { session ->
                     session.login(Pkcs11UserType.CKU_USER, tokenPin)
+                    getDocumentInputStream(documentUri).use {  }
                 }
             }
 
@@ -60,6 +65,15 @@ class SignViewModel(
 
             _status.value = Status(null, false)
             _result.value = Result.failure(exception)
+        }
+    }
+
+    private fun getDocumentInputStream(documentUri: Uri): InputStream {
+        try {
+            return context.contentResolver.openInputStream(documentUri)
+                ?: throw BusinessRuleException(FILE_UNAVAILABLE)
+        } catch (e: FileNotFoundException) {
+            throw BusinessRuleException(FILE_UNAVAILABLE)
         }
     }
 }

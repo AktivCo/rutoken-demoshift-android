@@ -33,4 +33,6 @@
     <string name="wrong_rutoken">The user is registered with another Rutoken device</string>
     <string name="connection_lost">Connection with the Rutoken has been lost</string>
     <string name="user_duplicates">User with this token is already registered</string>
+    <string name="file_unavailable">The chosen file is unavailable</string>
+
 </resources>

@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import ru.rutoken.demoshift.pkcs11.RtPkcs11Module
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.ui.adduser.AddUserViewModel
+import ru.rutoken.demoshift.ui.document.DocumentViewModel
 import ru.rutoken.demoshift.ui.sign.SignViewModel
 import ru.rutoken.demoshift.ui.userlist.UserListViewModel
 import ru.rutoken.demoshift.user.UserRepository
@@ -22,5 +23,8 @@ val koinModule = module {
     viewModel { UserListViewModel(get()) }
     viewModel { (tokenPin: String, userId: Int, documentUri: Uri) ->
         SignViewModel(androidContext(), get(), tokenPin, userId, documentUri)
+    }
+    viewModel { (documentFilename: String) ->
+        DocumentViewModel(androidContext(), documentFilename)
     }
 }
