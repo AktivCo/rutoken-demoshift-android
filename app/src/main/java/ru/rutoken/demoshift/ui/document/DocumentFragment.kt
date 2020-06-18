@@ -17,7 +17,6 @@ import ru.rutoken.demoshift.ui.document.DocumentFragmentDirections.toSignFragmen
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
-import ru.rutoken.demoshift.utils.createFileSharingIntent
 import java.io.File
 
 
@@ -41,7 +40,6 @@ class DocumentFragment : Fragment() {
 
         binding.documentPdfView.fromAsset(document)
             .scrollHandle(DefaultScrollHandle(requireContext()))
-            .onLongPress { startActivity(createFileSharingIntent(documentUri, requireContext())) }
             .load()
 
         binding.signButton.setOnClickListener {

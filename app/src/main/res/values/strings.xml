@@ -8,7 +8,6 @@
     <string name="choose_user">Choose user</string>
     <string name="sign">Sign</string>
     <string name="back_to_user_list">Back to the user list</string>
-    <string name="copied_text">Copied to the clipboard</string>
     <string name="copy_text">Copy</string>
     <string name="error_text">Something went wrong.\nTry  the operation again</string>
     <string name="add_user">Add user</string>
@@ -22,7 +21,7 @@
                             \nor\n
                             \nConnect Rutoken via USB to your device.</string>
     <string name="add_user_ok">User added</string>
-    <string name="share_document">Share the document</string>
+    <string name="share_result">Share the document and the signature</string>
     <string name="more_than_one_certificate">More than one certificate found</string>
     <string name="multivalued_rdn">Multiple RDN values with the same type</string>
     <string name="rdn_not_found">Suitable RDNs are not found</string>

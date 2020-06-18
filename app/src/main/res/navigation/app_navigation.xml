@@ -73,6 +73,9 @@
         android:label="fragment_sign_result"
         tools:layout="@layout/fragment_sign_result">
         <argument
+            android:name="document_uri"
+            app:argType="android.net.Uri" />
+        <argument
             android:name="signature"
             app:argType="string" />
         <action

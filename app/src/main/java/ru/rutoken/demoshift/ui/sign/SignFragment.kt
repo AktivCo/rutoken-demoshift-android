@@ -46,7 +46,12 @@ class SignFragment : Fragment() {
 
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
             if (result.isSuccess) {
-                findNavController().navigate(toSignResultFragment(result.getOrNull()!!))
+                findNavController().navigate(
+                    toSignResultFragment(
+                        args.documentUri,
+                        result.getOrThrow()
+                    )
+                )
             } else {
                 val exceptionMessage = (result.exceptionOrNull() as Exception).message.orEmpty()
                 workProgressBinding.statusTextView.text =
