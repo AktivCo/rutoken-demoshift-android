@@ -1,6 +1,16 @@
 package ru.rutoken.demoshift.utils
 
-class BusinessRuleException(val case: BusinessRuleCase) : Exception(case.name)
+class BusinessRuleException : Exception {
+    val case: BusinessRuleCase
+
+    constructor(case: BusinessRuleCase) : super(case.name) {
+        this.case = case
+    }
+
+    constructor(case: BusinessRuleCase, e: Throwable) : super(case.name, e) {
+        this.case = case
+    }
+}
 
 enum class BusinessRuleCase {
     KEY_PAIR_NOT_FOUND,

@@ -12,8 +12,8 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.x500.style.BCStyle
 import org.bouncycastle.cert.X509CertificateHolder
 import ru.rutoken.demoshift.R
-import ru.rutoken.demoshift.pkcs11.GostCertificateAndKeyPair
-import ru.rutoken.demoshift.pkcs11.GostCertificateAndKeyPairFinder
+import ru.rutoken.demoshift.pkcs11.GostContainer
+import ru.rutoken.demoshift.pkcs11.GostObjectFinder
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.user.User
 import ru.rutoken.demoshift.user.UserRepository
@@ -22,6 +22,7 @@ import ru.rutoken.demoshift.utils.BusinessRuleCase.MORE_THAN_ONE_CERTIFICATE
 import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
 import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.demoshift.utils.Status
+import ru.rutoken.demoshift.pkcs11.getSerialNumber
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
@@ -48,8 +49,10 @@ class AddUserViewModel(
             val token = tokenManager.getSingleTokenAsync().await()
             _status.value = Status(context.getString(R.string.processing), true)
 
-            val certificateAndKeyPair = findCertificateAndKeyPair(token, tokenPin)
-            val serialNumber = getTokenSerial(token)
+            val gostContainer = findContainer(token, tokenPin)
+            val serialNumber = withContext(Dispatchers.IO) {
+                return@withContext token.getSerialNumber()
+            }
 
             // FIXME: check whether using LiveData with DB will be ok
             if (userRepository.getUsers().value.orEmpty().any {
@@ -57,7 +60,7 @@ class AddUserViewModel(
                 })
                 throw BusinessRuleException(USER_DUPLICATES)
 
-            userRepository.addUser(makeUser(certificateAndKeyPair, serialNumber))
+            userRepository.addUser(makeUser(gostContainer, serialNumber))
 
             _status.value = Status(context.getString(R.string.done), false)
             _result.value = Result.success(Unit)
@@ -70,29 +73,25 @@ class AddUserViewModel(
         }
     }
 
-    private suspend fun findCertificateAndKeyPair(token: Pkcs11Token, pin: String) =
+    private suspend fun findContainer(token: Pkcs11Token, pin: String) =
         withContext(Dispatchers.IO) {
             token.openSession(false).use { session ->
                 session.login(Pkcs11UserType.CKU_USER, pin).use {
-                    val certKeys = GostCertificateAndKeyPairFinder.find(session)
+                    val gostContainers = GostObjectFinder.findContainers(session)
 
-                    if (certKeys.isEmpty())
+                    if (gostContainers.isEmpty())
                         throw BusinessRuleException(CERTIFICATE_NOT_FOUND)
 
-                    if (certKeys.size != 1)
+                    if (gostContainers.size != 1)
                         throw BusinessRuleException(MORE_THAN_ONE_CERTIFICATE)
 
-                    return@withContext certKeys.first()
+                    return@withContext gostContainers.first()
                 }
             }
         }
 
-    private suspend fun getTokenSerial(token: Pkcs11Token) = withContext(Dispatchers.IO) {
-        return@withContext token.tokenInfo.manufacturerId.trimEnd()
-    }
-
-    private fun makeUser(certAndKeyPair: GostCertificateAndKeyPair, serial: String): User {
-        val cert = certAndKeyPair.certificate
+    private fun makeUser(gostContainer: GostContainer, serial: String): User {
+        val cert = gostContainer.certificate
         val expiresDate = cert.notAfter
 
         cert.subject.rdNs.forEach {
@@ -114,7 +113,7 @@ class AddUserViewModel(
             organization,
             expiresDate,
             cert.encoded,
-            certAndKeyPair.ckaId,
+            gostContainer.ckaId,
             serial
         )
     }

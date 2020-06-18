@@ -21,8 +21,8 @@ val koinModule = module {
     single<UserRepository> { UserRepositoryImpl() }
     viewModel { (tokenPin: String) -> AddUserViewModel(androidContext(), get(), get(), tokenPin) }
     viewModel { UserListViewModel(get()) }
-    viewModel { (tokenPin: String, userId: Int, documentUri: Uri) ->
-        SignViewModel(androidContext(), get(), tokenPin, userId, documentUri)
+    viewModel { (tokenPin: String, documentUri: Uri, userId: Int) ->
+        SignViewModel(androidContext(), get(), tokenPin, documentUri, get(), userId)
     }
     viewModel { (documentFilename: String) ->
         DocumentViewModel(androidContext(), documentFilename)

@@ -7,6 +7,8 @@ import ru.rutoken.pkcs11wrapper.`object`.certificate.Pkcs11X509PublicKeyCertific
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPrivateKeyObject
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPublicKeyObject
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11AttributeFactory
+import ru.rutoken.pkcs11wrapper.attribute.Pkcs11ByteArrayAttribute
+import ru.rutoken.pkcs11wrapper.attribute.longvalue.Pkcs11ObjectClassAttribute
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11AttributeType
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11ObjectClass
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11KeyPair
@@ -14,15 +16,15 @@ import ru.rutoken.pkcs11wrapper.main.Pkcs11Session
 import java.util.*
 
 
-object GostCertificateAndKeyPairFinder {
+object GostObjectFinder {
     /**
      * It is supposed that the user is logged in.
      */
-    fun find(session: Pkcs11Session): List<GostCertificateAndKeyPair> {
-        val certificates =
-            session.objectManager.findObjectsAtOnce(Pkcs11X509PublicKeyCertificateObject::class.java)
+    fun findContainers(session: Pkcs11Session): List<GostContainer> {
+        val certificates = session.objectManager
+            .findObjectsAtOnce(Pkcs11X509PublicKeyCertificateObject::class.java)
 
-        val result = mutableListOf<GostCertificateAndKeyPair>()
+        val result = mutableListOf<GostContainer>()
 
         for (certificate in certificates) {
             val x509CertificateHolder =
@@ -43,7 +45,7 @@ object GostCertificateAndKeyPairFinder {
             }
 
             result.add(
-                GostCertificateAndKeyPair(
+                GostContainer(
                     x509CertificateHolder,
                     keyPair,
                     keyPair.publicKey.getIdAttributeValue(session).byteArrayValue
@@ -80,6 +82,33 @@ object GostCertificateAndKeyPairFinder {
         return Pkcs11KeyPair(publicKey, privateKey)
     }
 
+    fun findKeyPairByCkaId(
+        session: Pkcs11Session,
+        ckaId: ByteArray
+    ): Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
+        val publicKey = session.objectManager.findSingleObject(
+            listOf(
+                Pkcs11ByteArrayAttribute(Pkcs11AttributeType.CKA_ID, ckaId),
+                Pkcs11AttributeFactory.getInstance().makeAttribute(
+                    Pkcs11AttributeType.CKA_CLASS,
+                    Pkcs11ObjectClass.CKO_PUBLIC_KEY
+                )
+            )
+        ) as Pkcs11GostPublicKeyObject
+
+        val privateKey = session.objectManager.findSingleObject(
+            listOf(
+                Pkcs11ByteArrayAttribute(Pkcs11AttributeType.CKA_ID, ckaId),
+                Pkcs11ObjectClassAttribute(
+                    Pkcs11AttributeType.CKA_CLASS,
+                    Pkcs11ObjectClass.CKO_PRIVATE_KEY
+                )
+            )
+        ) as Pkcs11GostPrivateKeyObject
+
+        return Pkcs11KeyPair(publicKey, privateKey)
+    }
+
     private fun getPublicKeyValue(certificateHolder: X509CertificateHolder): ByteArray {
         val keyValue = certificateHolder.subjectPublicKeyInfo.parsePublicKey().encoded
 
@@ -92,7 +121,7 @@ object GostCertificateAndKeyPairFinder {
     }
 }
 
-data class GostCertificateAndKeyPair(
+data class GostContainer(
     val certificate: X509CertificateHolder,
     val keyPair: Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject>,
     val ckaId: ByteArray

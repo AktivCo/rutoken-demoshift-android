@@ -4,6 +4,7 @@ import ru.rutoken.demoshift.bouncycastle.digest.GostR3411_1994Digest
 import ru.rutoken.demoshift.bouncycastle.digest.GostR3411_2012_256Digest
 import ru.rutoken.demoshift.bouncycastle.digest.GostR3411_2012_512Digest
 import ru.rutoken.demoshift.bouncycastle.digest.Pkcs11Digest
+import ru.rutoken.demoshift.pkcs11.GostOids
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11PrivateKeyObject
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11MechanismType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Session
@@ -44,4 +45,16 @@ class GostR3410_2012_512Signature(session: Pkcs11Session) : Signature(session) {
         innerSign(Pkcs11Mechanism.make(RtPkcs11MechanismType.CKM_GOSTR3410_512), data)
 
     override fun makeDigest() = GostR3411_2012_512Digest(session)
+}
+
+fun makeSignatureByHashOid(hashOid: ByteArray, session: Pkcs11Session) = when {
+    hashOid.contentEquals(GostOids.DER_OID_3411_1994) -> GostR3410_2001Signature(session)
+
+    hashOid.contentEquals(GostOids.DER_OID_3411_2012_256) -> GostR3410_2012_256Signature(session)
+
+    hashOid.contentEquals(GostOids.DER_OID_3411_2012_512) -> GostR3410_2012_512Signature(session)
+
+    else -> throw IllegalStateException(
+        "Unsupported hash OID: " + hashOid.joinToString("") { "%02x".format(it) }
+    )
 }
