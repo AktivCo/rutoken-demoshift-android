@@ -11,11 +11,30 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <TextView
+        android:id="@+id/unsupportedFileSelected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/can_not_display_file"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/selectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="0dp"
+        android:insetBottom="4dp"
+        android:text="@string/select_file"
+        app:backgroundTint="?attr/colorSecondary"
+        app:shapeAppearance="?attr/shapeAppearanceLargeComponent" />
+
     <Button
         android:id="@+id/signButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="0dp"
+        android:insetTop="4dp"
         android:insetBottom="0dp"
         android:text="@string/sign"
         app:backgroundTint="?attr/colorSecondary"

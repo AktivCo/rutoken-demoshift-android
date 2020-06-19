@@ -37,4 +37,6 @@
     <string name="no_user">Пользователи ещё не зарегистрированы</string>
     <string name="user_removed">Пользователь удалён</string>
     <string name="undo">Отмена</string>
+    <string name="select_file">Выбрать файл</string>
+    <string name="can_not_display_file">Не удалось отобразить файл\n\nВозможно отображение только PDF файлов</string>
 </resources>
