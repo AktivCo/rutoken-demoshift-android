@@ -22,7 +22,8 @@
                             \nConnect Rutoken via USB to your device.</string>
     <string name="add_user_ok">User added</string>
     <string name="share_result">Share the document and the signature</string>
-    <string name="more_than_one_certificate">More than one certificate found</string>
+    <string name="more_than_one_certificate">More than one certificate found\n
+                                             \nThere must be only one certificate on Rutoken</string>
     <string name="multivalued_rdn">Multiple RDN values with the same type</string>
     <string name="rdn_not_found">Suitable RDNs are not found</string>
     <string name="pin_incorrect">PIN is incorrect</string>
@@ -31,7 +32,7 @@
     <string name="certificate_not_found">Cannot find the certificate</string>
     <string name="wrong_rutoken">The user is registered with another Rutoken device</string>
     <string name="connection_lost">Connection with the Rutoken has been lost</string>
-    <string name="user_duplicates">User with this token is already registered</string>
+    <string name="user_duplicates">User with this Rutoken is already registered</string>
     <string name="file_unavailable">The chosen file is unavailable</string>
-
+    <string name="no_user">Users are not registered yet</string>
 </resources>

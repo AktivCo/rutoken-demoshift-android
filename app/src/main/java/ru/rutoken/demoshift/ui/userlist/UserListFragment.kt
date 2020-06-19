@@ -32,7 +32,11 @@ class UserListFragment : Fragment() {
     ): View? {
         val binding = FragmentUserListBinding.inflate(inflater)
         val viewModel: UserListViewModel by viewModel()
-        val userListAdapter = UserListAdapter(viewModel.getUsers().value ?: mutableListOf())
+        val users = viewModel.getUsers().value.orEmpty()
+        val userListAdapter = UserListAdapter(users)
+
+        binding.emptyUserListTextView.visibility = if (users.isEmpty()) View.VISIBLE else View.GONE
+        binding.usersRecyclerView.visibility = if (users.isEmpty()) View.GONE else View.VISIBLE
 
         binding.usersRecyclerView.apply {
             setHasFixedSize(true)
@@ -42,6 +46,10 @@ class UserListFragment : Fragment() {
 
         viewModel.getUsers().observe(viewLifecycleOwner, Observer {
             userListAdapter.users = it
+
+            binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+
             userListAdapter.notifyDataSetChanged()
         })
 
