@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020, Aktiv-Soft JSC. See https://download.rutoken.ru/License_Agreement.pdf.
+ * All Rights Reserved.
+ */
+
 package ru.rutoken.demoshift.ui.userlist
 
 import android.os.Bundle
