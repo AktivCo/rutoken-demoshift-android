@@ -1,5 +1,7 @@
 package ru.rutoken.demoshift.pkcs11
 
+import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers
+import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers
 import org.bouncycastle.cert.X509CertificateHolder
 import ru.rutoken.pkcs11wrapper.`object`.certificate.Pkcs11X509PublicKeyCertificateObject
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPrivateKeyObject
@@ -26,7 +28,19 @@ object GostCertificateAndKeyPairFinder {
             val x509CertificateHolder =
                 X509CertificateHolder(certificate.getValueAttributeValue(session).byteArrayValue)
 
-            val keyPair = findKeyPairByCertificate(session, x509CertificateHolder)
+            if (x509CertificateHolder.subjectPublicKeyInfo.algorithm.algorithm !in setOf(
+                    RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256,
+                    RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512,
+                    CryptoProObjectIdentifiers.gostR3410_2001
+                )
+            )
+                continue
+
+            val keyPair = try {
+                findKeyPairByCertificate(session, x509CertificateHolder)
+            } catch (ignore: IllegalStateException) {
+                continue
+            }
 
             result.add(
                 GostCertificateAndKeyPair(
