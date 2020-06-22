@@ -6,6 +6,7 @@ import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPrivateKeyObject
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPublicKeyObject
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11AttributeFactory
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11AttributeType
+import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11ObjectClass
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11KeyPair
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Session
 import java.util.*
@@ -44,19 +45,23 @@ object GostCertificateAndKeyPairFinder {
         certificateHolder: X509CertificateHolder
     ): Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
         val publicKey = session.objectManager.findSingleObject(
-            Pkcs11GostPublicKeyObject::class.java,
             listOf(
                 Pkcs11AttributeFactory.getInstance().makeAttribute(
                     Pkcs11AttributeType.CKA_VALUE,
                     getPublicKeyValue(certificateHolder)
                 )
             )
-        )
+        ) as Pkcs11GostPublicKeyObject
 
         val privateKey = session.objectManager.findSingleObject(
-            Pkcs11GostPrivateKeyObject::class.java,
-            listOf(publicKey.getIdAttributeValue(session))
-        )
+            listOf(
+                publicKey.getIdAttributeValue(session),
+                Pkcs11AttributeFactory.getInstance().makeAttribute(
+                    Pkcs11AttributeType.CKA_CLASS,
+                    Pkcs11ObjectClass.CKO_PRIVATE_KEY
+                )
+            )
+        ) as Pkcs11GostPrivateKeyObject
 
         return Pkcs11KeyPair(publicKey, privateKey)
     }
