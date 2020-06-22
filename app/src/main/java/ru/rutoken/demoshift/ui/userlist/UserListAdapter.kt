@@ -8,13 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentUserBinding
 import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toDocumentFragment
-import ru.rutoken.demoshift.user.User
+import ru.rutoken.demoshift.database.User
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class UserListAdapter(var users: List<User>) :
+class UserListAdapter :
     RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
+    var users: List<User> = emptyList()
+
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val view = holder.view
         val user = getUser(position)

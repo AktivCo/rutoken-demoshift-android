@@ -1,6 +1,7 @@
 package ru.rutoken.demoshift.ui.adduser
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,8 +16,8 @@ import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.pkcs11.GostContainer
 import ru.rutoken.demoshift.pkcs11.GostObjectFinder
 import ru.rutoken.demoshift.tokenmanager.TokenManager
-import ru.rutoken.demoshift.user.User
-import ru.rutoken.demoshift.user.UserRepository
+import ru.rutoken.demoshift.database.User
+import ru.rutoken.demoshift.repository.UserRepository
 import ru.rutoken.demoshift.utils.BusinessRuleCase.CERTIFICATE_NOT_FOUND
 import ru.rutoken.demoshift.utils.BusinessRuleCase.MORE_THAN_ONE_CERTIFICATE
 import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
@@ -49,19 +50,19 @@ class AddUserViewModel(
             val token = tokenManager.getSingleTokenAsync().await()
             _status.value = Status(context.getString(R.string.processing), true)
 
-            val gostContainer = findContainer(token, tokenPin)
             val serialNumber = withContext(Dispatchers.IO) {
                 return@withContext token.getSerialNumber()
             }
+            requireUniqueTokenSerial(serialNumber)
 
-            // FIXME: check whether using LiveData with DB will be ok
-            if (userRepository.getUsers().value.orEmpty().any {
-                    it.tokenSerialNumber == serialNumber
-                })
-                throw BusinessRuleException(USER_DUPLICATES)
+            val gostContainer = findContainer(token, tokenPin)
 
-            userRepository.addUser(makeUser(gostContainer, serialNumber))
-
+            try {
+                userRepository.addUser(makeUser(gostContainer, serialNumber))
+            } catch (e: SQLiteConstraintException) {
+                throw BusinessRuleException(USER_DUPLICATES, e)
+            }
+            
             _status.value = Status(context.getString(R.string.done), false)
             _result.value = Result.success(Unit)
 
@@ -90,6 +91,13 @@ class AddUserViewModel(
             }
         }
 
+    private suspend fun requireUniqueTokenSerial(tokenSerial: String) {
+        for (user in userRepository.getUsers()) {
+            if (tokenSerial == user.tokenSerialNumber)
+                throw BusinessRuleException(USER_DUPLICATES)
+        }
+    }
+
     private fun makeUser(gostContainer: GostContainer, serial: String): User {
         val cert = gostContainer.certificate
         val expiresDate = cert.notAfter
@@ -108,13 +116,13 @@ class AddUserViewModel(
         check(hasFullName || cn != null) { context.getString(R.string.rdn_not_found) }
 
         return User(
-            if (hasFullName) "$surname $givenName" else cn!!,
-            position,
-            organization,
-            expiresDate,
-            cert.encoded,
-            gostContainer.ckaId,
-            serial
+            fullName = if (hasFullName) "$surname $givenName" else cn!!,
+            position = position,
+            organization = organization,
+            certificateExpires = expiresDate,
+            certificateDerValue = cert.encoded,
+            ckaId = gostContainer.ckaId,
+            tokenSerialNumber = serial
         )
     }
 

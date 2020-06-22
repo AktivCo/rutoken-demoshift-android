@@ -2,13 +2,13 @@ package ru.rutoken.demoshift.ui.userlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import ru.rutoken.demoshift.user.User
-import ru.rutoken.demoshift.user.UserRepository
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import ru.rutoken.demoshift.repository.UserRepository
+import ru.rutoken.demoshift.database.User
 
 class UserListViewModel(private val repository: UserRepository) : ViewModel() {
-    fun getUser(userId: Int): LiveData<User> = repository.getUser(userId)
+    fun getUsers(): LiveData<List<User>> = repository.getUsersAsync()
 
-    fun getUsers(): LiveData<List<User>> = repository.getUsers()
-
-    fun removeUser(userId: Int) = repository.removeUser(userId)
+    fun removeUser(user: User) = viewModelScope.launch { repository.removeUser(user) }
 }

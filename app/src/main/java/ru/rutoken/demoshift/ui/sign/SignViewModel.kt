@@ -17,12 +17,11 @@ import ru.rutoken.demoshift.bouncycastle.signature.makeSignatureByHashOid
 import ru.rutoken.demoshift.pkcs11.GostObjectFinder
 import ru.rutoken.demoshift.pkcs11.getSerialNumber
 import ru.rutoken.demoshift.tokenmanager.TokenManager
-import ru.rutoken.demoshift.user.User
-import ru.rutoken.demoshift.user.UserRepository
+import ru.rutoken.demoshift.database.User
+import ru.rutoken.demoshift.repository.UserRepository
 import ru.rutoken.demoshift.utils.BusinessRuleCase.*
 import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.demoshift.utils.Status
-import ru.rutoken.demoshift.utils.await
 import ru.rutoken.pkcs11wrapper.`object`.certificate.Pkcs11X509PublicKeyCertificateObject
 import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPrivateKeyObject
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11ByteArrayAttribute
@@ -40,11 +39,9 @@ class SignViewModel(
     private val tokenManager: TokenManager,
     private val tokenPin: String,
     private val documentUri: Uri,
-    userRepository: UserRepository,
-    userId: Int
+    private val userRepository: UserRepository,
+    private val userId: Int
 ) : ViewModel() {
-    private val userLiveData = userRepository.getUser(userId)
-
     private val _status = MutableLiveData<Status>()
     val status: LiveData<Status> = _status
 
@@ -57,7 +54,7 @@ class SignViewModel(
 
     fun sign() = viewModelScope.launch {
         try {
-            val user = userLiveData.await()
+            val user = userRepository.getUser(userId)
             val token = tokenManager.getSingleTokenAsync().await()
             _status.value = Status(context.getString(R.string.processing), true)
 

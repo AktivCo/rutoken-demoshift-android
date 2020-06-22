@@ -32,11 +32,7 @@ class UserListFragment : Fragment() {
     ): View? {
         val binding = FragmentUserListBinding.inflate(inflater)
         val viewModel: UserListViewModel by viewModel()
-        val users = viewModel.getUsers().value.orEmpty()
-        val userListAdapter = UserListAdapter(users)
-
-        binding.emptyUserListTextView.visibility = if (users.isEmpty()) View.VISIBLE else View.GONE
-        binding.usersRecyclerView.visibility = if (users.isEmpty()) View.GONE else View.VISIBLE
+        val userListAdapter = UserListAdapter()
 
         binding.usersRecyclerView.apply {
             setHasFixedSize(true)
