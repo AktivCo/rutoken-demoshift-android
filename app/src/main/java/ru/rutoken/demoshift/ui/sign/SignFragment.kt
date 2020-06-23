@@ -26,7 +26,7 @@ class SignFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSignBinding.inflate(inflater)
-        workProgressBinding = WorkProgressBinding.bind(binding.root)
+        workProgressBinding = binding.signWorkProgress
 
         return binding.root
     }
@@ -42,7 +42,7 @@ class SignFragment : Fragment() {
             status.message?.let { workProgressBinding.statusTextView.text = it }
 
             workProgressBinding.progressBar.visibility =
-                if (status.isProgress) View.VISIBLE else View.INVISIBLE
+                if (status.isProgress) View.VISIBLE else View.GONE
         })
 
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
