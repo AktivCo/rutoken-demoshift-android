@@ -32,18 +32,14 @@ class UserListAdapter :
             R.string.field_not_set
         )
         binding.userCertificateExpires.text =
-            if (user.certificateExpires != null)
-                SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-                    .format(user.certificateExpires)
-            else
-                view.context.getString(R.string.field_not_set)
+            SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(user.certificateExpires)
 
         binding.userCardView.setOnClickListener {
             view.findNavController().navigate(toDocumentFragment(user.id))
         }
     }
 
-    private fun getUser(position: Int) = users[position]
+    fun getUser(position: Int) = users[position]
 
     override fun getItemCount() = users.size()
 

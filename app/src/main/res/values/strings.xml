@@ -20,7 +20,7 @@
                             \nTurn on Bluetooth on your device and pair it with Rutoken Bluetooth.\n
                             \nor\n
                             \nConnect Rutoken via USB to your device.</string>
-    <string name="add_user_ok">User added</string>
+    <string name="add_user_ok">User has been added</string>
     <string name="share_result">Share the document and the signature</string>
     <string name="more_than_one_certificate">More than one certificate found\n
                                              \nThere must be only one certificate on Rutoken</string>
@@ -35,4 +35,6 @@
     <string name="user_duplicates">User with this Rutoken is already registered</string>
     <string name="file_unavailable">The chosen file is unavailable</string>
     <string name="no_user">Users are not registered yet</string>
+    <string name="user_removed">User has been removed</string>
+    <string name="undo">Undo</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="user_duplicates">Пользователь с таким Рутокеном уже зарегистрирован</string>
     <string name="file_unavailable">Выбранный файл недоступен</string>
     <string name="no_user">Пользователи ещё не зарегистрированы</string>
+    <string name="user_removed">Пользователь удалён</string>
+    <string name="undo">Отмена</string>
 </resources>
