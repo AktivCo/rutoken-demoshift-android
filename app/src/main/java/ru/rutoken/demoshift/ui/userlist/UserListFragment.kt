@@ -41,7 +41,7 @@ class UserListFragment : Fragment() {
         }
 
         viewModel.getUsers().observe(viewLifecycleOwner, Observer {
-            userListAdapter.users = it
+            userListAdapter.setUsers(it)
 
             binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE

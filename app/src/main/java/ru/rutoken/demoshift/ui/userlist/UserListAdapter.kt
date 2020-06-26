@@ -5,17 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
+import androidx.recyclerview.widget.SortedListAdapterCallback
 import ru.rutoken.demoshift.R
+import ru.rutoken.demoshift.database.User
 import ru.rutoken.demoshift.databinding.FragmentUserBinding
 import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toDocumentFragment
-import ru.rutoken.demoshift.database.User
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class UserListAdapter :
     RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
-    var users: List<User> = emptyList()
+    var users: SortedList<User> = SortedList(User::class.java, SortedListCallback(this))
+
+    fun setUsers(userList: List<User>) = users.replaceAll(userList)
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val view = holder.view
@@ -41,7 +45,7 @@ class UserListAdapter :
 
     private fun getUser(position: Int) = users[position]
 
-    override fun getItemCount() = users.size
+    override fun getItemCount() = users.size()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val userView =
@@ -50,4 +54,20 @@ class UserListAdapter :
     }
 
     class UserViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+}
+
+private class SortedListCallback(adapter: UserListAdapter) :
+    SortedListAdapterCallback<User>(adapter) {
+    override fun compare(o1: User, o2: User): Int {
+        val fullNameCompare = o1.fullName.compareTo(o2.fullName)
+
+        return if (fullNameCompare != 0)
+            fullNameCompare
+        else
+            o1.tokenSerialNumber.compareTo(o2.tokenSerialNumber)
+    }
+
+    override fun areItemsTheSame(item1: User, item2: User) = item1 === item2
+
+    override fun areContentsTheSame(oldItem: User, newItem: User) = compare(oldItem, newItem) == 0
 }
