@@ -24,7 +24,7 @@ import ru.rutoken.demoshift.databinding.FragmentUserListBinding
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
-import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toAddUserFragment
+import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toCertificateListFragment
 
 
 class UserListFragment : Fragment() {
@@ -36,7 +36,7 @@ class UserListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         childFragmentManager.setFragmentResultListener(DIALOG_RESULT_KEY, this) { _, bundle ->
             val pin = bundle.getString(PIN_KEY)
-            findNavController().navigate(toAddUserFragment(pin!!))
+            findNavController().navigate(toCertificateListFragment(pin!!))
         }
     }
 
@@ -46,6 +46,9 @@ class UserListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentUserListBinding.inflate(inflater)
+        binding.addUserButton.setOnClickListener {
+            PinDialogFragment().show(childFragmentManager, null)
+        }
 
         binding.usersRecyclerView.apply {
             setHasFixedSize(true)
@@ -54,18 +57,18 @@ class UserListFragment : Fragment() {
             ItemTouchHelper(ItemTouchHelperCallback()).attachToRecyclerView(this)
         }
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         viewModel.getUsers().observe(viewLifecycleOwner, Observer {
             userListAdapter.setUsers(it)
 
             binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         })
-
-        binding.addUserButton.setOnClickListener {
-            PinDialogFragment().show(childFragmentManager, null)
-        }
-
-        return binding.root
     }
 
     inner class ItemTouchHelperCallback :

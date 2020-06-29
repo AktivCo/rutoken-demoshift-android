@@ -32,7 +32,6 @@ private val pkcs11ErrorMessages = mapOf<IPkcs11ReturnValue, @StringRes Int>(
 
 private val businessRuleStateMessages = mapOf(
     BusinessRuleCase.CERTIFICATE_NOT_FOUND to R.string.certificate_not_found,
-    BusinessRuleCase.MORE_THAN_ONE_CERTIFICATE to R.string.more_than_one_certificate,
     BusinessRuleCase.KEY_PAIR_NOT_FOUND to R.string.key_pair_not_found,
     BusinessRuleCase.WRONG_RUTOKEN to R.string.wrong_rutoken,
     BusinessRuleCase.USER_DUPLICATES to R.string.user_duplicates,

@@ -18,8 +18,8 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
-            android:id="@+id/toAddUserFragment"
-            app:destination="@id/addUserFragment"
+            android:id="@+id/toCertificateListFragment"
+            app:destination="@id/certificateListFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
@@ -90,10 +90,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/addUserFragment"
-        android:name="ru.rutoken.demoshift.ui.adduser.AddUserFragment"
-        android:label="fragment_add_user"
-        tools:layout="@layout/fragment_add_user">
+        android:id="@+id/certificateListFragment"
+        android:name="ru.rutoken.demoshift.ui.certificatelist.CertificateListFragment"
+        android:label="fragment_certificate_list"
+        tools:layout="@layout/fragment_certificate_list">
         <argument
             android:name="pin"
             app:argType="string" />

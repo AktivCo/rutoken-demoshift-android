@@ -6,6 +6,7 @@
     <string name="user_certificate_expires">Сертификат истекает</string>
     <string name="field_not_set">&lt;не задано&gt;</string>
     <string name="choose_user">Выберите пользователя</string>
+    <string name="choose_certificate">Выберите сертификат</string>
     <string name="sign">Подписать</string>
     <string name="back_to_user_list">К списку пользователей</string>
     <string name="copy_text">Копировать</string>
@@ -22,8 +23,6 @@
                             \nПодключите Рутокен в USB-разъем.</string>
     <string name="add_user_ok">Пользователь добавлен</string>
     <string name="share_result">Поделиться документом и подписью</string>
-    <string name="more_than_one_certificate">Найдено более одного сертификата\n
-                                             \nОставьте на Рутокене один сертификат</string>
     <string name="multivalued_rdn">Несколько значений RDN с одинаковым типом</string>
     <string name="rdn_not_found">Не найдены подходящие RDN</string>
     <string name="pin_incorrect">Неверный PIN-код</string>
