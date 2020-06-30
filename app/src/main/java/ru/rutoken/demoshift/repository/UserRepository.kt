@@ -7,7 +7,6 @@
 package ru.rutoken.demoshift.repository
 
 import androidx.lifecycle.LiveData
-import ru.rutoken.demoshift.database.User
 
 interface UserRepository {
     suspend fun getUser(userId: Int): User

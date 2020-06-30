@@ -1,0 +1,69 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "a6d944552d4cb0171053754b9ff95179",
+    "entities": [
+      {
+        "tableName": "users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `certificateDerValue` BLOB NOT NULL, `ckaId` BLOB NOT NULL, `tokenSerialNumber` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "certificateDerValue",
+            "columnName": "certificateDerValue",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ckaId",
+            "columnName": "ckaId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tokenSerialNumber",
+            "columnName": "tokenSerialNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_users_certificateDerValue",
+            "unique": true,
+            "columnNames": [
+              "certificateDerValue"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_users_certificateDerValue` ON `${TABLE_NAME}` (`certificateDerValue`)"
+          },
+          {
+            "name": "index_users_tokenSerialNumber",
+            "unique": true,
+            "columnNames": [
+              "tokenSerialNumber"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_users_tokenSerialNumber` ON `${TABLE_NAME}` (`tokenSerialNumber`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a6d944552d4cb0171053754b9ff95179')"
+    ]
+  }
+}

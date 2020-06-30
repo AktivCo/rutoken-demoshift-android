@@ -21,9 +21,9 @@ import ru.rutoken.demoshift.bouncycastle.signature.Signature
 import ru.rutoken.demoshift.bouncycastle.signature.makeSignatureByHashOid
 import ru.rutoken.demoshift.pkcs11.GostObjectFinder
 import ru.rutoken.demoshift.pkcs11.getSerialNumber
-import ru.rutoken.demoshift.tokenmanager.TokenManager
-import ru.rutoken.demoshift.database.User
+import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
+import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.utils.BusinessRuleCase.*
 import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.demoshift.utils.Status
@@ -83,16 +83,16 @@ class SignViewModel(
     }
 
     private suspend fun makeSign(user: User, token: Pkcs11Token) = withContext(Dispatchers.IO) {
-        if (user.tokenSerialNumber != token.getSerialNumber())
+        if (user.userEntity.tokenSerialNumber != token.getSerialNumber())
             throw BusinessRuleException(WRONG_RUTOKEN)
 
         token.openSession(false).use { session ->
             session.login(Pkcs11UserType.CKU_USER, tokenPin).use {
-                requireCertificate(session, user.certificateDerValue)
-                val certificate = X509CertificateHolder(user.certificateDerValue)
+                requireCertificate(session, user.userEntity.certificateDerValue)
+                val certificate = X509CertificateHolder(user.userEntity.certificateDerValue)
 
                 val keyPair = try {
-                    GostObjectFinder.findKeyPairByCkaId(session, user.ckaId)
+                    GostObjectFinder.findKeyPairByCkaId(session, user.userEntity.ckaId)
                 } catch (e: IllegalStateException) {
                     throw BusinessRuleException(KEY_PAIR_NOT_FOUND, e)
                 }

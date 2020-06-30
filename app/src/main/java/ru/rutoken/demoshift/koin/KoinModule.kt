@@ -14,11 +14,11 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.rutoken.demoshift.database.Database
 import ru.rutoken.demoshift.pkcs11.RtPkcs11Module
-import ru.rutoken.demoshift.repository.UserRepository
-import ru.rutoken.demoshift.repository.UserRepositoryImpl
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.ui.certificatelist.CertificateListViewModel
 import ru.rutoken.demoshift.ui.document.DocumentViewModel
+import ru.rutoken.demoshift.repository.UserRepository
+import ru.rutoken.demoshift.repository.UserRepositoryImpl
 import ru.rutoken.demoshift.ui.sign.SignViewModel
 import ru.rutoken.demoshift.ui.userlist.UserListViewModel
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module

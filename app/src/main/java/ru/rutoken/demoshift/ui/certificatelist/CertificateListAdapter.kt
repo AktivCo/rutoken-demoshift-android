@@ -10,9 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.rutoken.demoshift.R
-import ru.rutoken.demoshift.databinding.FragmentUserBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import ru.rutoken.demoshift.databinding.CertificateCardBinding
+import ru.rutoken.demoshift.utils.getAlgorithmNameById
 
 
 class CertificateListAdapter(private val listener: CertificateCardListener) :
@@ -26,18 +25,20 @@ class CertificateListAdapter(private val listener: CertificateCardListener) :
     override fun onBindViewHolder(holder: CertificateViewHolder, position: Int) {
         val view = holder.view
         val certificate = getCertificate(position)
-        val binding = FragmentUserBinding.bind(view)
+        val binding = CertificateCardBinding.bind(view)
 
         binding.userFullName.text = certificate.fullName
         binding.userPosition.text =
             certificate.position ?: view.context.getString(R.string.field_not_set)
-        binding.userOrganization.text = certificate.organization ?: view.context.getString(
-            R.string.field_not_set
-        )
-        binding.userCertificateExpires.text = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-            .format(certificate.certificateExpires)
-
-        binding.userCardView.setOnClickListener {
+        binding.userOrganization.text =
+            certificate.organization ?: view.context.getString(R.string.field_not_set)
+        binding.algorithm.text = getAlgorithmNameById(view.context, certificate.algorithmId)
+            ?: view.context.getString(R.string.field_not_set)
+        binding.userCertificateExpires.text = certificate.certificateExpires
+        binding.inn.text =
+            certificate.inn ?: view.context.getString(R.string.field_not_set)
+        binding.ogrn.text = certificate.ogrn ?: view.context.getString(R.string.field_not_set)
+        binding.certificateView.setOnClickListener {
             listener.onClick(certificate)
         }
     }
@@ -48,7 +49,7 @@ class CertificateListAdapter(private val listener: CertificateCardListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CertificateViewHolder {
         val certificateView =
-            FragmentUserBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
+            CertificateCardBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
         return CertificateViewHolder(certificateView)
     }
 

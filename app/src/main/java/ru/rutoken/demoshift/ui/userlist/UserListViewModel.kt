@@ -9,8 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
-import ru.rutoken.demoshift.database.User
 
 
 class UserListViewModel(private val repository: UserRepository) : ViewModel() {

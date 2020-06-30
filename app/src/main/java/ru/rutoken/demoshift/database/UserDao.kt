@@ -11,18 +11,18 @@ import androidx.room.*
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user WHERE id = :userId")
-    suspend fun getUser(userId: Int): User
+    @Query("SELECT * FROM users WHERE id = :userId")
+    suspend fun getUser(userId: Int): UserEntity
 
-    @Query("SELECT * FROM user")
-    suspend fun getUsers(): List<User>
+    @Query("SELECT * FROM users")
+    suspend fun getUsers(): List<UserEntity>
 
-    @Query("SELECT * FROM user")
-    fun getUsersAsync(): LiveData<List<User>>
+    @Query("SELECT * FROM users")
+    fun getUsersAsync(): LiveData<List<UserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addUser(user: User)
+    suspend fun addUser(user: UserEntity)
 
     @Delete
-    suspend fun deleteUser(user: User)
+    suspend fun deleteUser(user: UserEntity)
 }

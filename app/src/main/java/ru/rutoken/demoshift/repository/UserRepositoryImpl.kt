@@ -7,21 +7,25 @@
 package ru.rutoken.demoshift.repository
 
 import androidx.annotation.AnyThread
+import androidx.annotation.MainThread
+import androidx.lifecycle.Transformations
 import ru.rutoken.demoshift.database.Database
-import ru.rutoken.demoshift.database.User
 
 
 @AnyThread
 class UserRepositoryImpl(database: Database) : UserRepository {
     private val userDao = database.userDao()
 
-    override suspend fun getUser(userId: Int) = userDao.getUser(userId)
+    override suspend fun getUser(userId: Int) = makeUser(userDao.getUser(userId))
 
-    override suspend fun getUsers() = userDao.getUsers()
+    override suspend fun getUsers() = userDao.getUsers().map { makeUser(it) }
 
-    override fun getUsersAsync() = userDao.getUsersAsync()
+    @MainThread
+    override fun getUsersAsync() = Transformations.map(userDao.getUsersAsync()) { userEntityList ->
+        userEntityList.map { makeUser(it) }
+    }
 
-    override suspend fun addUser(user: User) = userDao.addUser(user)
+    override suspend fun addUser(user: User) = userDao.addUser(user.userEntity)
 
-    override suspend fun removeUser(user: User) = userDao.deleteUser(user)
+    override suspend fun removeUser(user: User) = userDao.deleteUser(user.userEntity)
 }

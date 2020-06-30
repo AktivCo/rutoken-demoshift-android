@@ -13,11 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import ru.rutoken.demoshift.R
-import ru.rutoken.demoshift.database.User
-import ru.rutoken.demoshift.databinding.FragmentUserBinding
+import ru.rutoken.demoshift.databinding.UserCardBinding
+import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toDocumentFragment
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class UserListAdapter :
@@ -32,18 +30,17 @@ class UserListAdapter :
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val view = holder.view
         val user = getUser(position)
-        val binding = FragmentUserBinding.bind(view)
+        val binding = UserCardBinding.bind(view)
         binding.userFullName.text = user.fullName
         binding.userPosition.text =
             user.position ?: view.context.getString(R.string.field_not_set)
         binding.userOrganization.text = user.organization ?: view.context.getString(
             R.string.field_not_set
         )
-        binding.userCertificateExpires.text =
-            SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(user.certificateExpires)
+        binding.userCertificateExpires.text = user.certificateExpires
 
         binding.userCardView.setOnClickListener {
-            view.findNavController().navigate(toDocumentFragment(user.id))
+            view.findNavController().navigate(toDocumentFragment(user.userEntity.id))
         }
     }
 
@@ -53,7 +50,7 @@ class UserListAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val userView =
-            FragmentUserBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
+            UserCardBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
         return UserViewHolder(userView)
     }
 
@@ -68,7 +65,7 @@ private class SortedListCallback(adapter: UserListAdapter) :
         return if (fullNameCompare != 0)
             fullNameCompare
         else
-            o1.tokenSerialNumber.compareTo(o2.tokenSerialNumber)
+            o1.userEntity.tokenSerialNumber.compareTo(o2.userEntity.tokenSerialNumber)
     }
 
     override fun areItemsTheSame(item1: User, item2: User) = item1 === item2

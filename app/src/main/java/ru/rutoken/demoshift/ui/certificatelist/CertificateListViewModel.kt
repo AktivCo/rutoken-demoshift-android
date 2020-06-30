@@ -14,20 +14,18 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.bouncycastle.asn1.ASN1ObjectIdentifier
-import org.bouncycastle.asn1.x500.style.BCStyle
-import org.bouncycastle.cert.X509CertificateHolder
 import ru.rutoken.demoshift.R
-import ru.rutoken.demoshift.pkcs11.GostContainer
+import ru.rutoken.demoshift.database.UserEntity
 import ru.rutoken.demoshift.pkcs11.GostObjectFinder
-import ru.rutoken.demoshift.tokenmanager.TokenManager
-import ru.rutoken.demoshift.database.User
+import ru.rutoken.demoshift.pkcs11.getSerialNumber
+import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
+import ru.rutoken.demoshift.repository.makeUser
+import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.utils.BusinessRuleCase.CERTIFICATE_NOT_FOUND
 import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
 import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.demoshift.utils.Status
-import ru.rutoken.demoshift.pkcs11.getSerialNumber
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
@@ -65,11 +63,17 @@ class CertificateListViewModel(
             requireUniqueTokenSerial(serialNumber)
 
             val gostContainers = findContainers(token, tokenPin)
-            _pkcs11Result.value =
-                Result.success(gostContainers.map { makeCertificate(it, serialNumber) })
+            _pkcs11Result.value = Result.success(gostContainers.map {
+                makeUser(
+                    UserEntity(
+                        certificateDerValue = it.certificate.encoded,
+                        ckaId = it.ckaId,
+                        tokenSerialNumber = serialNumber
+                    )
+                )
+            })
 
             _status.value = Status(context.getString(R.string.done), false)
-
         } catch (e: Exception) {
             val exception = if (e is ExecutionException) (e.cause ?: e) else e
 
@@ -94,7 +98,7 @@ class CertificateListViewModel(
 
     private suspend fun requireUniqueTokenSerial(tokenSerial: String) {
         for (user in userRepository.getUsers()) {
-            if (tokenSerial == user.tokenSerialNumber)
+            if (tokenSerial == user.userEntity.tokenSerialNumber)
                 throw BusinessRuleException(USER_DUPLICATES)
         }
     }
@@ -107,38 +111,5 @@ class CertificateListViewModel(
         } catch (e: SQLiteConstraintException) {
             _addUserResult.value = Result.failure(BusinessRuleException(USER_DUPLICATES))
         }
-    }
-
-    private fun makeCertificate(gostContainer: GostContainer, serial: String): Certificate {
-        val cert = gostContainer.certificate
-        val expiresDate = cert.notAfter
-
-        cert.subject.rdNs.forEach {
-            check(!it.isMultiValued) { context.getString(R.string.multivalued_rdn) }
-        }
-
-        val cn = cert.getIssuerRdnValue(BCStyle.CN)
-        val surname = cert.getIssuerRdnValue(BCStyle.SURNAME)
-        val givenName = cert.getIssuerRdnValue(BCStyle.GIVENNAME)
-        val position = cert.getIssuerRdnValue(BCStyle.T)
-        val organization = cert.getIssuerRdnValue(BCStyle.O)
-
-        val hasFullName = surname != null && givenName != null
-        check(hasFullName || cn != null) { context.getString(R.string.rdn_not_found) }
-
-        return Certificate(
-            fullName = if (hasFullName) "$surname $givenName" else cn!!,
-            position = position,
-            organization = organization,
-            certificateExpires = expiresDate,
-            certificateDerValue = cert.encoded,
-            ckaId = gostContainer.ckaId,
-            tokenSerialNumber = serial
-        )
-    }
-
-    private fun X509CertificateHolder.getIssuerRdnValue(type: ASN1ObjectIdentifier): String? {
-        val rdn = subject.rdNs.find { it.first.type == type }
-        return rdn?.first?.value?.toString()
     }
 }
