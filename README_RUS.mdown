@@ -8,12 +8,38 @@
 
 ## Требования
 
-Рутокен Демосмена собирается ...
+Рутокен Демосмена собирается с использованием:
 
-Внешние зависимости находятся в [Рутокен SDK](https://www.rutoken.ru/developers/sdk/)
+* Android Studio 4.0 или новее;
+* Android SDK Platform 29 или новее.
+
+Внешние зависимости находятся в [Рутокен SDK](https://www.rutoken.ru/developers/sdk/).
+
+Необходимые библиотеки:
+
+* librtpkcs11ecp.so (под следующие архитектуры: armeabi-v7a, arm64-v8a);
+* librtpcsc.so (под следующие архитектуры: armeabi-v7a, arm64-v8a);
+* rtserviceconnection\*.aar, где \* — версия библиотеки (текущая версия '-1.0.1');
+* pkcs11jna\*.jar, где \* — версия библиотеки (текущая версия '-1.1.2');
+* pkcs11wrapper\*.aar, где \* — версия библиотеки (текущая версия '-1.1.0').
 
 ## Как собрать
-...
+
+Прежде чем собирать проект:
+
+* положите библиотеки librtpkcs11ecp.so и librtpcsc.so в папку `<project_root>/app/src/main/jniLibs/<arch>/`, где `<arch>` — архитектура библиотеки;
+* положите rtserviceconnection\*.aar, pkcs11jna\*.jar и pkcs11wrapper\*.aar в папку `<project_root>/app/libs/`.
+
+Для сборки из консоли:
+
+    cd <project_root>
+    ./gradlew build
+
+Для сборки с помощью Android Studio:
+
+* запустите Android Studio;
+* выберите `"File">"Open...": <project_root>`;
+* выберите `"Build">"Make project"`.
 
 ## Предварительные действия
 

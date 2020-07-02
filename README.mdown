@@ -8,14 +8,38 @@ It also contains some useful classes for device detection and signing docs.
 
 ## Requirements
 
-Rutoken DemoShift should be built using...
+Rutoken DemoShift should be built using:
+
+* Android Studio 4.0 or newer;
+* Android SDK Platform 29 or newer.
 
 External dependencies are located in [Rutoken SDK](https://www.rutoken.ru/developers/sdk/).
 
+Required libraries:
+
+* librtpkcs11ecp.so (for following architectures: armeabi-v7a, arm64-v8a);
+* librtpcsc.so (for following architectures: armeabi-v7a, arm64-v8a);
+* rtserviceconnection\*.aar, where \* is library version (current version is '-1.0.1');
+* pkcs11jna\*.jar, where \* is library version (current version is '-1.1.2');
+* pkcs11wrapper\*.aar, where \* is library version (current version is '-1.1.0').
 
 ## How to build
 
-...
+Before building the project:
+
+* copy librtpkcs11ecp.so and librtpcsc.so libraries to `<project_root>/app/src/main/jniLibs/<arch>/`, where `<arch>` is library architecture;
+* copy rtserviceconnection\*.aar, pkcs11jna\*.jar and pkcs11wrapper\*.aar to `<project_root>/app/libs/`.
+
+To build from console:
+
+    cd <project_root>
+    ./gradlew build
+
+To build with Android Studio:
+
+* open Android Studio;
+* select `"File">"Open...": <project_root>`;
+* select `"Build">"Make project"`.
 
 ## Preliminary actions
 
