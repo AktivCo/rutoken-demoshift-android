@@ -1,0 +1,93 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "88f94662d9ccd717a2656784b69e1e94",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fullName` TEXT NOT NULL, `position` TEXT, `organization` TEXT, `certificateExpires` INTEGER NOT NULL, `certificateDerValue` BLOB NOT NULL, `ckaId` BLOB NOT NULL, `tokenSerialNumber` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "organization",
+            "columnName": "organization",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "certificateExpires",
+            "columnName": "certificateExpires",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "certificateDerValue",
+            "columnName": "certificateDerValue",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ckaId",
+            "columnName": "ckaId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tokenSerialNumber",
+            "columnName": "tokenSerialNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_User_certificateDerValue",
+            "unique": true,
+            "columnNames": [
+              "certificateDerValue"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_User_certificateDerValue` ON `${TABLE_NAME}` (`certificateDerValue`)"
+          },
+          {
+            "name": "index_User_tokenSerialNumber",
+            "unique": true,
+            "columnNames": [
+              "tokenSerialNumber"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_User_tokenSerialNumber` ON `${TABLE_NAME}` (`tokenSerialNumber`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '88f94662d9ccd717a2656784b69e1e94')"
+    ]
+  }
+}
