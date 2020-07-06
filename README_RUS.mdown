@@ -30,16 +30,7 @@
 * положите библиотеки librtpkcs11ecp.so и librtpcsc.so в папку `<project_root>/app/src/main/jniLibs/<arch>/`, где `<arch>` — архитектура библиотеки;
 * положите rtserviceconnection\*.aar, pkcs11jna\*.jar и pkcs11wrapper\*.aar в папку `<project_root>/app/libs/`.
 
-Для сборки из консоли:
-
-    cd <project_root>
-    ./gradlew build
-
-Для сборки с помощью Android Studio:
-
-* запустите Android Studio;
-* выберите `"File">"Open...": <project_root>`;
-* выберите `"Build">"Make project"`.
+Используйте Android Studio для сборки проекта.
 
 ## Предварительные действия
 

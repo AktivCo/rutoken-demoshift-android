@@ -30,16 +30,7 @@ Before building the project:
 * copy librtpkcs11ecp.so and librtpcsc.so libraries to `<project_root>/app/src/main/jniLibs/<arch>/`, where `<arch>` is library architecture;
 * copy rtserviceconnection\*.aar, pkcs11jna\*.jar and pkcs11wrapper\*.aar to `<project_root>/app/libs/`.
 
-To build from console:
-
-    cd <project_root>
-    ./gradlew build
-
-To build with Android Studio:
-
-* open Android Studio;
-* select `"File">"Open...": <project_root>`;
-* select `"Build">"Make project"`.
+Use Android Studio to build the project.
 
 ## Preliminary actions
 
