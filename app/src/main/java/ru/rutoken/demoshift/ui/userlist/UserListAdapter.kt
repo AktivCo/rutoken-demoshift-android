@@ -22,9 +22,12 @@ import java.util.*
 
 class UserListAdapter :
     RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
-    var users: SortedList<User> = SortedList(User::class.java, SortedListCallback(this))
+    private var users: SortedList<User> = SortedList(User::class.java, SortedListCallback(this))
 
-    fun setUsers(userList: List<User>) = users.replaceAll(userList)
+    fun setUsers(userList: List<User>) {
+        users.replaceAll(userList)
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val view = holder.view
@@ -44,7 +47,7 @@ class UserListAdapter :
         }
     }
 
-    fun getUser(position: Int) = users[position]
+    fun getUser(position: Int): User = users[position]
 
     override fun getItemCount() = users.size()
 

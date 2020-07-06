@@ -59,8 +59,6 @@ class UserListFragment : Fragment() {
 
             binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
-
-            userListAdapter.notifyDataSetChanged()
         })
 
         binding.addUserButton.setOnClickListener {
