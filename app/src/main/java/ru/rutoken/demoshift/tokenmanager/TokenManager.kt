@@ -16,6 +16,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.rutoken.demoshift.tokenmanager.slotevent.SlotEvent
 import ru.rutoken.demoshift.tokenmanager.slotevent.SlotEventProvider
+import ru.rutoken.demoshift.utils.BusinessRuleCase.TOO_MANY_TOKENS
+import ru.rutoken.demoshift.utils.BusinessRuleException
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11InitializeArgs
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
@@ -39,9 +41,8 @@ class TokenManager(private val pkcs11Module: Pkcs11Module) :
             // If more than one token has been plugged in while the application was paused -
             // assume it as illegal state.
             if (size > 1)
-                waitTokenDeferred?.completeExceptionally(
-                    MultipleTokensException("Too many tokens: $size")
-                )
+                waitTokenDeferred?.completeExceptionally(BusinessRuleException(TOO_MANY_TOKENS))
+
             forEach { addToken(it.token) }
         }
 
@@ -76,7 +77,7 @@ class TokenManager(private val pkcs11Module: Pkcs11Module) :
                 1 -> CompletableDeferred(tokens.first())
 
                 else -> CompletableDeferred<Pkcs11Token>().apply {
-                    completeExceptionally(MultipleTokensException("Too many tokens: ${tokens.size}"))
+                    completeExceptionally(BusinessRuleException(TOO_MANY_TOKENS))
                 }
             }
         }
@@ -106,5 +107,3 @@ class TokenManager(private val pkcs11Module: Pkcs11Module) :
         fun onTokenRemoved(token: Token)
     }
 }
-
-class MultipleTokensException(message: String) : Exception(message)

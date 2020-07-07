@@ -38,4 +38,5 @@
     <string name="undo">Отмена</string>
     <string name="select_file">Выбрать файл</string>
     <string name="can_not_display_file">Не удалось отобразить файл\n\nВозможно отображение только PDF файлов</string>
+    <string name="too_many_tokens">К устройству подключено слишком много Рутокенов</string>
 </resources>

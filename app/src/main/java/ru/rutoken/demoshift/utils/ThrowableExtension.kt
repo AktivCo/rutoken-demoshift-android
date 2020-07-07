@@ -35,5 +35,6 @@ private val businessRuleStateMessages = mapOf(
     BusinessRuleCase.KEY_PAIR_NOT_FOUND to R.string.key_pair_not_found,
     BusinessRuleCase.WRONG_RUTOKEN to R.string.wrong_rutoken,
     BusinessRuleCase.USER_DUPLICATES to R.string.user_duplicates,
-    BusinessRuleCase.FILE_UNAVAILABLE to R.string.file_unavailable
+    BusinessRuleCase.FILE_UNAVAILABLE to R.string.file_unavailable,
+    BusinessRuleCase.TOO_MANY_TOKENS to R.string.too_many_tokens
 )
