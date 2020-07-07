@@ -13,6 +13,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.rutoken.demoshift.database.Database
+import ru.rutoken.demoshift.database.MIGRATION_1_2
 import ru.rutoken.demoshift.pkcs11.RtPkcs11Module
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.ui.certificatelist.CertificateListViewModel
@@ -28,7 +29,10 @@ val koinModule = module {
     single { TokenManager(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
     single {
-        Room.databaseBuilder(androidContext(), Database::class.java, "demoshift_database").build()
+        Room.databaseBuilder(androidContext(), Database::class.java, "demoshift_database")
+            .addMigrations(MIGRATION_1_2)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
     }
     viewModel { (tokenPin: String) ->
         CertificateListViewModel(androidContext(), get(), get(), tokenPin)
