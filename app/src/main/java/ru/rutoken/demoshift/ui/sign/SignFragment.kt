@@ -17,21 +17,20 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentSignBinding
-import ru.rutoken.demoshift.databinding.WorkProgressBinding
 import ru.rutoken.demoshift.ui.sign.SignFragmentDirections.toSignResultFragment
+import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
 
 
 class SignFragment : Fragment() {
-    private lateinit var workProgressBinding: WorkProgressBinding
+    private lateinit var binding: FragmentSignBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentSignBinding.inflate(inflater)
-        workProgressBinding = binding.signWorkProgress
+        binding = FragmentSignBinding.inflate(inflater)
 
         return binding.root
     }
@@ -43,11 +42,8 @@ class SignFragment : Fragment() {
             getViewModel(parameters = { parametersOf(args.pin, args.documentUri, args.userId) })
 
 
-        viewModel.status.observe(viewLifecycleOwner, Observer { status ->
-            status.message?.let { workProgressBinding.statusTextView.text = it }
-
-            workProgressBinding.progressBar.visibility =
-                if (status.isProgress) View.VISIBLE else View.GONE
+        viewModel.status.observe(viewLifecycleOwner, Observer {
+            binding.workProgress.setStatus(it)
         })
 
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
@@ -60,9 +56,12 @@ class SignFragment : Fragment() {
                 )
             } else {
                 val exceptionMessage = (result.exceptionOrNull() as Exception).message.orEmpty()
-                workProgressBinding.statusTextView.text =
-                    result.exceptionOrNull()?.asReadableText(requireContext())
-                        ?: "${getString(R.string.error_text)}\n\n" + exceptionMessage
+                binding.workProgress.setStatus(
+                    Status(
+                        result.exceptionOrNull()?.asReadableText(requireContext())
+                            ?: "${getString(R.string.error_text)}\n\n" + exceptionMessage
+                    )
+                )
             }
         })
     }

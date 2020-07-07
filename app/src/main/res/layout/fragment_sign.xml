@@ -7,13 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.sign.SignFragment">
 
-    <include
-        android:id="@+id/signWorkProgress"
-        layout="@layout/work_progress"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_spacing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ru.rutoken.demoshift.ui.workprogress.WorkProgressView
+            android:id="@+id/workProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

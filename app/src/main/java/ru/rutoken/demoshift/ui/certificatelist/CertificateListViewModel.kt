@@ -22,10 +22,10 @@ import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
 import ru.rutoken.demoshift.repository.makeUser
 import ru.rutoken.demoshift.tokenmanager.TokenManager
+import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.BusinessRuleCase.CERTIFICATE_NOT_FOUND
 import ru.rutoken.demoshift.utils.BusinessRuleCase.USER_DUPLICATES
 import ru.rutoken.demoshift.utils.BusinessRuleException
-import ru.rutoken.demoshift.utils.Status
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
@@ -39,7 +39,13 @@ class CertificateListViewModel(
     private val userRepository: UserRepository,
     tokenPin: String
 ) : ViewModel() {
-    private val _status = MutableLiveData<Status>()
+    private val _status = MutableLiveData(
+        Status(
+            context.getText(R.string.waiting_token),
+            false,
+            context.getDrawable(R.drawable.ic_empty)
+        )
+    )
     val status: LiveData<Status> = _status
 
     private val _pkcs11Result = MutableLiveData<Result<List<Certificate>>>()

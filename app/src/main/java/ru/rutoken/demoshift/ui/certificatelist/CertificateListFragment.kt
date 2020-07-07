@@ -8,7 +8,8 @@ package ru.rutoken.demoshift.ui.certificatelist
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import org.koin.core.parameter.parametersOf
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentCertificateListBinding
 import ru.rutoken.demoshift.ui.certificatelist.CertificateListFragmentDirections.toUserListFragment
+import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
 import ru.rutoken.demoshift.utils.showError
 
@@ -55,19 +57,18 @@ class CertificateListFragment : Fragment() {
         val args: CertificateListFragmentArgs by navArgs()
         viewModel = getViewModel(parameters = { parametersOf(args.pin) })
 
-        viewModel.status.observe(viewLifecycleOwner, Observer { status ->
-            status.message?.let { binding.workProgress.statusTextView.text = it }
-            binding.workProgress.progressBar.visibility = if (status.isProgress) VISIBLE else GONE
+        viewModel.status.observe(viewLifecycleOwner, Observer {
+            binding.workProgress.setStatus(it)
         })
 
         viewModel.pkcs11Result.observe(viewLifecycleOwner, Observer { result ->
             binding.certificatesView.visibility = if (result.isSuccess) VISIBLE else GONE
-            binding.workProgress.root.visibility = if (result.isSuccess) GONE else VISIBLE
+            binding.workProgress.visibility = if (result.isSuccess) GONE else VISIBLE
 
             if (result.isSuccess)
                 certificatesListAdapter.certificates = result.getOrThrow()
             else
-                binding.workProgress.statusTextView.text = result.getFailureMessage()
+                binding.workProgress.setStatus(Status(result.getFailureMessage()))
         })
 
         viewModel.addUserResult.observe(viewLifecycleOwner, Observer { result ->

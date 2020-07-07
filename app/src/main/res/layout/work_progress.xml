@@ -4,7 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/default_spacing">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -12,8 +19,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:indeterminateTint="@color/rutokenRed"
-        android:indeterminateTintMode="src_atop"
-        android:visibility="gone" />
+        android:indeterminateTintMode="src_atop" />
 
     <TextView
         android:id="@+id/statusTextView"
@@ -21,7 +27,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/default_spacing"
-        android:text="@string/waiting_token"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="20sp" />
 </LinearLayout>
