@@ -10,15 +10,14 @@ import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers
 import org.bouncycastle.cert.X509CertificateHolder
 import ru.rutoken.pkcs11wrapper.`object`.certificate.Pkcs11X509PublicKeyCertificateObject
-import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPrivateKeyObject
-import ru.rutoken.pkcs11wrapper.`object`.key.Pkcs11GostPublicKeyObject
+import ru.rutoken.pkcs11wrapper.`object`.key.*
+import ru.rutoken.pkcs11wrapper.attribute.Pkcs11Attribute
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11AttributeFactory
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11ByteArrayAttribute
-import ru.rutoken.pkcs11wrapper.attribute.longvalue.Pkcs11ObjectClassAttribute
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11AttributeType
-import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11ObjectClass
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11KeyPair
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Session
+import ru.rutoken.pkcs11wrapper.manager.Pkcs11ObjectManager
 import java.util.*
 
 
@@ -66,54 +65,43 @@ object GostObjectFinder {
         session: Pkcs11Session,
         certificateHolder: X509CertificateHolder
     ): Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
-        val publicKey = session.objectManager.findSingleObject(
+        val publicKey = session.objectManager.findPublicKeys(
             listOf(
                 Pkcs11AttributeFactory.getInstance().makeAttribute(
                     Pkcs11AttributeType.CKA_VALUE,
                     getPublicKeyValue(certificateHolder)
                 )
             )
-        ) as Pkcs11GostPublicKeyObject
+        ).singleOrThrow()
 
-        val privateKey = session.objectManager.findSingleObject(
-            listOf(
-                publicKey.getIdAttributeValue(session),
-                Pkcs11AttributeFactory.getInstance().makeAttribute(
-                    Pkcs11AttributeType.CKA_CLASS,
-                    Pkcs11ObjectClass.CKO_PRIVATE_KEY
-                )
-            )
-        ) as Pkcs11GostPrivateKeyObject
+        val privateKey = session.objectManager.findPrivateKeys(
+            listOf(publicKey.getIdAttributeValue(session))
+        ).singleOrThrow()
 
         return Pkcs11KeyPair(publicKey, privateKey)
     }
 
-    fun findKeyPairByCkaId(
-        session: Pkcs11Session,
-        ckaId: ByteArray
-    ): Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
-        val publicKey = session.objectManager.findSingleObject(
-            listOf(
-                Pkcs11ByteArrayAttribute(Pkcs11AttributeType.CKA_ID, ckaId),
-                Pkcs11AttributeFactory.getInstance().makeAttribute(
-                    Pkcs11AttributeType.CKA_CLASS,
-                    Pkcs11ObjectClass.CKO_PUBLIC_KEY
-                )
-            )
-        ) as Pkcs11GostPublicKeyObject
+    fun findKeyPairByCkaId(session: Pkcs11Session, ckaId: ByteArray)
+            : Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
 
-        val privateKey = session.objectManager.findSingleObject(
-            listOf(
-                Pkcs11ByteArrayAttribute(Pkcs11AttributeType.CKA_ID, ckaId),
-                Pkcs11ObjectClassAttribute(
-                    Pkcs11AttributeType.CKA_CLASS,
-                    Pkcs11ObjectClass.CKO_PRIVATE_KEY
-                )
-            )
-        ) as Pkcs11GostPrivateKeyObject
+        val template = listOf(Pkcs11ByteArrayAttribute(Pkcs11AttributeType.CKA_ID, ckaId))
+        val publicKey = session.objectManager.findPublicKeys(template).singleOrThrow()
+        val privateKey = session.objectManager.findPrivateKeys(template).singleOrThrow()
 
         return Pkcs11KeyPair(publicKey, privateKey)
     }
+
+    private fun Pkcs11ObjectManager.findPublicKeys(template: List<Pkcs11Attribute>) =
+        findObjectsAtOnce(Pkcs11Gost256PublicKeyObject::class.java, template) +
+                findObjectsAtOnce(Pkcs11Gost512PublicKeyObject::class.java,template)
+
+
+    private fun Pkcs11ObjectManager.findPrivateKeys(template: List<Pkcs11Attribute>) =
+        findObjectsAtOnce(Pkcs11Gost256PrivateKeyObject::class.java, template) +
+                findObjectsAtOnce(Pkcs11Gost512PrivateKeyObject::class.java, template)
+
+    private fun <T> Collection<T>.singleOrThrow() =
+        singleOrNull() ?: throw IllegalStateException("One object required, but $size found")
 
     private fun getPublicKeyValue(certificateHolder: X509CertificateHolder): ByteArray {
         val keyValue = certificateHolder.subjectPublicKeyInfo.parsePublicKey().encoded
