@@ -45,4 +45,8 @@
     <string name="gost_r_3410_2012_256">GOST R 34.10–2012 256 bit</string>
     <string name="gost_r_3410_2012_512">GOST R 34.10–2012 512 bit</string>
     <string name="gost_r_3410_2001">GOST R 34.10–2001</string>
+    <string name="message_no_pcsc">This application requires Rutoken Control Panel being installed</string>
+    <string name="title_no_pcsc">Rutoken Panel not found</string>
+    <string name="exit">Exit</string>
+    <string name="install">Install</string>
 </resources>
