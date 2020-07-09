@@ -38,7 +38,7 @@
     <string name="undo">Undo</string>
     <string name="select_file">Select file</string>
     <string name="can_not_display_file">Selected file can not be displayed\n\nOnly PDF files can be displayed</string>
-    <string name="too_many_tokens">Too many Rutokens are connected</string>
+    <string name="too_many_tokens">Several Rutokens are connected to the device\n\nPlease leave only one</string>
     <string name="algorithm">Algorithm</string>
     <string name="inn">INN</string>
     <string name="ogrn">OGRN</string>
