@@ -139,7 +139,7 @@ preBuild.doLast {
 
     copyFile('pkcs11jna*.jar', "../../../../../../java/samples/lib", "libs")
     copyFile('rtserviceconnection*.aar', "../../../../libs", "libs")
-    copyFile('pkcs11wrapper*.aar', "../../../../libs", "libs")
+    copyFile('pkcs11wrapper*.aar', "../../../../pkcs11/pkcs11wrapper", "libs")
 
     requireFileInDirectory('libs', 'pkcs11jna*.jar')
     requireFileInDirectory('libs', 'rtserviceconnection*.aar')
