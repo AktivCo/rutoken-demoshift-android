@@ -16,7 +16,7 @@
     <string name="pin_continue">Continue</string>
     <string name="processing">Please wait, processing…</string>
     <string name="done">Done</string>
-    <string name="waiting_token"><b>Рутокен не обнаружен</b>\n
+    <string name="waiting_token"><b>Rutoken not found</b>\n
                             \nTurn on NFC and tap your device by Rutoken NFC-card\n
                             \n<font color='silver'>or</font>\n
                             \nTurn on Bluetooth on your device and pair it with Rutoken Bluetooth\n
