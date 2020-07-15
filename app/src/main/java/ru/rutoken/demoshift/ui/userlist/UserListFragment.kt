@@ -84,12 +84,10 @@ class UserListFragment : Fragment() {
             val user = userListAdapter.getUser(position)
 
             viewModel.removeUser(user)
-            userListAdapter.notifyItemRemoved(position)
 
             Snackbar.make(binding.userListLayout, R.string.user_removed, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     viewModel.addUser(user)
-                    userListAdapter.notifyItemInserted(position)
                 }
                 .setBackgroundTint(
                     ContextCompat.getColor(binding.userListLayout.context, R.color.rutokenBlack)
