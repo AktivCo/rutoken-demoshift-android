@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -29,7 +28,7 @@ class SignFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSignBinding.inflate(inflater)
 
         return binding.root
@@ -42,11 +41,11 @@ class SignFragment : Fragment() {
             getViewModel(parameters = { parametersOf(args.pin, args.documentUri, args.userId) })
 
 
-        viewModel.status.observe(viewLifecycleOwner, Observer {
+        viewModel.status.observe(viewLifecycleOwner) {
             binding.workProgress.setStatus(it)
-        })
+        }
 
-        viewModel.result.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.result.observe(viewLifecycleOwner) { result ->
             if (result.isSuccess) {
                 findNavController().navigate(
                     toSignResultFragment(
@@ -63,6 +62,6 @@ class SignFragment : Fragment() {
                     )
                 )
             }
-        })
+        }
     }
 }

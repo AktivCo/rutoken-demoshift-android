@@ -13,7 +13,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +40,7 @@ class CertificateListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCertificateListBinding.inflate(inflater)
         binding.certificatesRecyclerView.apply {
             setHasFixedSize(true)
@@ -57,11 +56,11 @@ class CertificateListFragment : Fragment() {
         val args: CertificateListFragmentArgs by navArgs()
         viewModel = getViewModel(parameters = { parametersOf(args.pin) })
 
-        viewModel.status.observe(viewLifecycleOwner, Observer {
+        viewModel.status.observe(viewLifecycleOwner) {
             binding.workProgress.setStatus(it)
-        })
+        }
 
-        viewModel.pkcs11Result.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.pkcs11Result.observe(viewLifecycleOwner) { result ->
             binding.certificatesView.visibility = if (result.isSuccess) VISIBLE else GONE
             binding.workProgress.visibility = if (result.isSuccess) GONE else VISIBLE
 
@@ -69,16 +68,16 @@ class CertificateListFragment : Fragment() {
                 certificatesListAdapter.certificates = result.getOrThrow()
             else
                 binding.workProgress.setStatus(Status(result.getFailureMessage()))
-        })
+        }
 
-        viewModel.addUserResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.addUserResult.observe(viewLifecycleOwner) { result ->
             if (result.isSuccess) {
                 Toast.makeText(context, getString(R.string.add_user_ok), Toast.LENGTH_SHORT).show()
                 findNavController().navigate(toUserListFragment())
             } else {
                 showError(binding.certificatesRecyclerView, result.getFailureMessage())
             }
-        })
+        }
     }
 
     private fun <T> Result<T>.getFailureMessage() =

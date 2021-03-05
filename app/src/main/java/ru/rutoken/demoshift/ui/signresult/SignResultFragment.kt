@@ -22,7 +22,7 @@ class SignResultFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentSignResultBinding.inflate(inflater)
         val args: SignResultFragmentArgs by navArgs()
 

@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,7 +43,7 @@ class UserListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentUserListBinding.inflate(inflater)
         binding.addUserButton.setOnClickListener {
             PinDialogFragment().show(childFragmentManager, null)
@@ -63,12 +62,12 @@ class UserListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getUsers().observe(viewLifecycleOwner, Observer {
+        viewModel.getUsers().observe(viewLifecycleOwner) {
             userListAdapter.setUsers(it)
 
             binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
-        })
+        }
     }
 
     inner class ItemTouchHelperCallback :

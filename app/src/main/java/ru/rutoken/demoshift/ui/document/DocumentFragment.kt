@@ -16,7 +16,6 @@ import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
@@ -33,25 +32,24 @@ class DocumentFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentDocumentBinding.inflate(inflater)
         val args: DocumentFragmentArgs by navArgs()
 
         val viewModel = getViewModel<DocumentViewModel>()
 
-        viewModel.documentUri.observe(viewLifecycleOwner,
-            Observer { uri ->
-                val isSupported = MimeTypeMap.getSingleton()
-                    .getExtensionFromMimeType(requireContext().contentResolver.getType(uri)) == "pdf"
+        viewModel.documentUri.observe(viewLifecycleOwner) { uri ->
+            val isSupported = MimeTypeMap.getSingleton()
+                .getExtensionFromMimeType(requireContext().contentResolver.getType(uri)) == "pdf"
 
-                if (isSupported)
-                    binding.documentPdfView.fromUri(uri)
-                        .scrollHandle(DefaultScrollHandle(requireContext()))
-                        .load()
-                
-                binding.documentPdfView.visibility = if (isSupported) VISIBLE else GONE
-                binding.unsupportedFileSelected.visibility = if (isSupported) GONE else VISIBLE
-            })
+            if (isSupported)
+                binding.documentPdfView.fromUri(uri)
+                    .scrollHandle(DefaultScrollHandle(requireContext()))
+                    .load()
+
+            binding.documentPdfView.visibility = if (isSupported) VISIBLE else GONE
+            binding.unsupportedFileSelected.visibility = if (isSupported) GONE else VISIBLE
+        }
 
         binding.signButton.setOnClickListener {
             PinDialogFragment().show(childFragmentManager, null)
