@@ -144,20 +144,20 @@ preBuild.doLast {
     if (new File("$rootDir/external").exists()) {
         copyFile('pkcs11jna*.jar', '../external/pkcs11jna/java', 'libs')
         copyFile('rtserviceconnection*.aar', '../external/rtserviceconnection/java/', 'libs')
-        copyFile('pkcs11wrapper*.aar', '../external/pkcs11wrapper/java/', 'libs')
+        copyFile('pkcs11wrapper*.jar', '../external/pkcs11wrapper/java/', 'libs')
     } else {
         copyFile('pkcs11jna*.jar', "../../../../../../java/samples/lib", "libs")
         copyFile('rtserviceconnection*.aar', "../../../../libs", "libs")
-        copyFile('pkcs11wrapper*.aar', "../../../../pkcs11/pkcs11wrapper", "libs")
+        copyFile('pkcs11wrapper*.jar', "../../../../pkcs11/pkcs11wrapper", "libs")
     }
 
     requireFileInDirectory('libs', 'pkcs11jna*.jar')
     requireFileInDirectory('libs', 'rtserviceconnection*.aar')
-    requireFileInDirectory('libs', 'pkcs11wrapper*.aar')
+    requireFileInDirectory('libs', 'pkcs11wrapper*.jar')
 }
 
 clean {
     delete fileTree('libs').matching {
-        include 'pkcs11jna*.jar', 'rtserviceconnection*.aar', 'pkcs11wrapper*.aar'
+        include 'pkcs11jna*.jar', 'rtserviceconnection*.aar', 'pkcs11wrapper*.jar'
     }
 }
