@@ -5,14 +5,19 @@
 
 package ru.rutoken.demoshift.ui.certificatelist
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.CertificateCardBinding
 import ru.rutoken.demoshift.utils.getAlgorithmNameById
 
+private const val NBSP = "\u00A0"
 
 class CertificateListAdapter(private val listener: CertificateCardListener) :
     RecyclerView.Adapter<CertificateListAdapter.CertificateViewHolder>() {
@@ -27,17 +32,16 @@ class CertificateListAdapter(private val listener: CertificateCardListener) :
         val certificate = getCertificate(position)
         val binding = CertificateCardBinding.bind(view)
 
+        fun String?.orNotSet() = this ?: view.context.getString(R.string.field_not_set)
+
         binding.userFullName.text = certificate.fullName
-        binding.userPosition.text =
-            certificate.position ?: view.context.getString(R.string.field_not_set)
-        binding.userOrganization.text =
-            certificate.organization ?: view.context.getString(R.string.field_not_set)
-        binding.algorithm.text = getAlgorithmNameById(view.context, certificate.algorithmId)
-            ?: view.context.getString(R.string.field_not_set)
+        binding.userPosition.text = certificate.position.orNotSet()
+        binding.userOrganization.text = certificate.organization.orNotSet()
+        binding.algorithm.text = getAlgorithmNameById(view.context, certificate.algorithmId).orNotSet()
         binding.userCertificateExpires.text = certificate.certificateExpires
-        binding.inn.text =
-            certificate.inn ?: view.context.getString(R.string.field_not_set)
-        binding.ogrn.text = certificate.ogrn ?: view.context.getString(R.string.field_not_set)
+        binding.inn.text = view.context.getInnText(certificate)
+        binding.ogrn.isVisible = certificate.ogrn != null || certificate.ogrnip != null
+        binding.ogrn.text = view.context.getOgrnText(certificate)
         binding.certificateView.setOnClickListener {
             listener.onClick(certificate)
         }
@@ -58,4 +62,28 @@ class CertificateListAdapter(private val listener: CertificateCardListener) :
 
 interface CertificateCardListener {
     fun onClick(certificate: Certificate)
+}
+
+private fun Context.getInnText(certificate: Certificate) = buildSpannedString {
+    bold { append(getString(R.string.inn)) }
+    append(NBSP)
+    append("${certificate.inn ?: getString(R.string.field_not_set)} ")
+    bold { append(getString(R.string.innle)) }
+    append(NBSP)
+    append(certificate.innle ?: getString(R.string.field_not_set))
+}
+
+private fun Context.getOgrnText(certificate: Certificate) = buildSpannedString {
+    if (certificate.ogrn != null) {
+        bold { append(getString(R.string.ogrn)) }
+        append(NBSP)
+        append(certificate.ogrn)
+        if (certificate.ogrnip != null)
+            append(" ")
+    }
+    if (certificate.ogrnip != null) {
+        bold { append(getString(R.string.ogrnip)) }
+        append(NBSP)
+        append(certificate.ogrnip)
+    }
 }

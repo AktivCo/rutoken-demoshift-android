@@ -4,7 +4,7 @@
     <string name="user_position">Должность</string>
     <string name="user_organization">Организация</string>
     <string name="user_certificate_expires">Сертификат истекает</string>
-    <string name="field_not_set">&lt;не задано&gt;</string>
+    <string name="field_not_set">&lt;не задано&gt;</string>
     <string name="choose_user">Выберите пользователя</string>
     <string name="choose_certificate">Выберите сертификат</string>
     <string name="sign">Подписать</string>
@@ -42,7 +42,9 @@
     <string name="too_many_tokens">К устройству подключено несколько Рутокенов\n\nПожалуйста, оставьте только один</string>
     <string name="algorithm">Алгоритм</string>
     <string name="inn">ИНН</string>
+    <string name="innle">ИНН ЮЛ</string>
     <string name="ogrn">ОГРН</string>
+    <string name="ogrnip">ОГРНИП</string>
     <string name="gost_r_3410_2012_256">ГОСТ Р 34.10–2012 256 бит</string>
     <string name="gost_r_3410_2012_512">ГОСТ Р 34.10–2012 512 бит</string>
     <string name="gost_r_3410_2001">ГОСТ Р 34.10–2001</string>

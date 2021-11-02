@@ -63,50 +63,25 @@
             android:alpha="@dimen/material_emphasis_medium"
             android:textAppearance="?attr/textAppearanceBody1" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/inn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_spacing"
+            android:alpha="@dimen/material_emphasis_medium"
+            android:text="@string/inn"
+            android:maxLines="2"
+            android:textAppearance="?attr/textAppearanceCaption" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_spacing"
-                android:alpha="@dimen/material_emphasis_medium"
-                android:text="@string/inn"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/inn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_spacing"
-                android:alpha="@dimen/material_emphasis_medium"
-                android:textAppearance="?attr/textAppearanceCaption" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_spacing"
-                android:alpha="@dimen/material_emphasis_medium"
-                android:text="@string/ogrn"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/ogrn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_spacing"
-                android:alpha="@dimen/material_emphasis_medium"
-                android:textAppearance="?attr/textAppearanceCaption" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/ogrn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_spacing"
+            android:alpha="@dimen/material_emphasis_medium"
+            android:text="@string/ogrn"
+            android:maxLines="2"
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -20,12 +20,16 @@ data class User(
     val organization: String?,
     val certificateExpires: String,
     val inn: String?,
+    val innle: String?,
     val ogrn: String?,
+    val ogrnip: String?,
     val algorithmId: String?
 )
 
 private const val INN_OID = "1.2.643.3.131.1.1"
+private const val INNLE_OID = "1.2.643.100.4"
 private const val OGRN_OID = "1.2.643.100.1"
+private const val OGRNIP_OID = "1.2.643.100.5"
 
 fun makeUser(
     userEntity: UserEntity
@@ -46,10 +50,11 @@ fun makeUser(
         fullName = if (hasFullName) "$surname $givenName" else cn!!,
         position = certificate.getIssuerRdnValue(BCStyle.T),
         organization = certificate.getIssuerRdnValue(BCStyle.O),
-        certificateExpires = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-            .format(certificate.notAfter),
+        certificateExpires = SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(certificate.notAfter),
         inn = certificate.getIssuerRdnValue(ASN1ObjectIdentifier(INN_OID)),
+        innle = certificate.getIssuerRdnValue(ASN1ObjectIdentifier(INNLE_OID)),
         ogrn = certificate.getIssuerRdnValue(ASN1ObjectIdentifier(OGRN_OID)),
+        ogrnip = certificate.getIssuerRdnValue(ASN1ObjectIdentifier(OGRNIP_OID)),
         algorithmId = certificate.subjectPublicKeyInfo.algorithm.algorithm.id
     )
 }
