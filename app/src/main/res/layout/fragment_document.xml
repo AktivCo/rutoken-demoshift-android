@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/documentPdfView"
         android:layout_width="match_parent"
@@ -39,4 +45,5 @@
         android:text="@string/sign"
         app:backgroundTint="?attr/colorSecondary"
         app:shapeAppearance="?attr/shapeAppearanceLargeComponent" />
+
 </LinearLayout>

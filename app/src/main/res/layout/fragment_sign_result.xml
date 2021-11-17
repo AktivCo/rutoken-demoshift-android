@@ -4,6 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -13,7 +20,7 @@
         app:layout_constraintBottom_toTopOf="@+id/shareButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarLayout"
         app:srcCompat="@drawable/pic" />
 
     <Button
@@ -22,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/share_result"
-        app:shapeAppearance="?attr/shapeAppearanceLargeComponent"
-        app:layout_constraintBottom_toTopOf="@id/backToUserListButton"
-        android:padding="@dimen/default_spacing"
-        android:textColor="?attr/colorSecondary"
         android:insetTop="0dp"
-        android:insetBottom="0dp" />
+        android:insetBottom="0dp"
+        android:padding="@dimen/default_spacing"
+        android:text="@string/share_result"
+        android:textColor="?attr/colorSecondary"
+        app:layout_constraintBottom_toTopOf="@id/backToUserListButton"
+        app:shapeAppearance="?attr/shapeAppearanceLargeComponent" />
 
     <Button
         android:id="@+id/backToUserListButton"
@@ -40,6 +47,7 @@
         android:insetBottom="0dp"
         android:text="@string/back_to_user_list"
         android:textColor="?attr/colorSecondary"
-        app:shapeAppearance="?attr/shapeAppearanceLargeComponent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:shapeAppearance="?attr/shapeAppearanceLargeComponent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

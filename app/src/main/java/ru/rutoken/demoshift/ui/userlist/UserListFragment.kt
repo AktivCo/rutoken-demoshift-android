@@ -5,10 +5,9 @@
 
 package ru.rutoken.demoshift.ui.userlist
 
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -20,11 +19,13 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentUserListBinding
+import ru.rutoken.demoshift.ui.launchCustomTabsUrl
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
 import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toCertificateListFragment
 
+private const val PRIVACY_POLICY_URL = "https://www.rutoken.ru/company/policy/demosmena-android.html"
 
 class UserListFragment : Fragment() {
     private lateinit var binding: FragmentUserListBinding
@@ -62,11 +63,28 @@ class UserListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+
         viewModel.getUsers().observe(viewLifecycleOwner) {
             userListAdapter.setUsers(it)
 
             binding.emptyUserListTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             binding.usersRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+        }
+    }
+
+    private fun setupToolbar() {
+        binding.toolbarLayout.toolbar.apply {
+            inflateMenu(R.menu.menu_main)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.toPrivacyPolicy -> {
+                        context.launchCustomTabsUrl(Uri.parse(PRIVACY_POLICY_URL))
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
     }
 
