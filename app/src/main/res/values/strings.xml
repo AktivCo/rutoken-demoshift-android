@@ -16,12 +16,11 @@
     <string name="pin_continue">Continue</string>
     <string name="processing">Please wait, processing…</string>
     <string name="done">Done</string>
-    <string name="waiting_token"><b>Rutoken not found</b>\n
-                            \nTurn on NFC and tap your device by Rutoken NFC-card\n
-                            \n<font color='silver'>or</font>\n
-                            \nTurn on Bluetooth on your device and pair it with Rutoken Bluetooth\n
-                            \n<font color='silver'>or</font>\n
-                            \nConnect Rutoken via USB to your device</string>
+    <string name="connect_token"><b>Connect Rutoken</b>\n\n</string>
+    <string name="waiting_token">\nConnection type depends on Rutoken model.\n
+                            \nFor <b>NFC-enabled Rutoken</b>: turn on NFC on your mobile device and hold Rutoken near it.\n
+                            \nFor <b>Bluetooth-enabled Rutoken</b>: turn on Bluetooth on your mobile device and pair it with Rutoken.\n
+                            \nFor <b>USB-enabled Rutoken</b>: connect Rutoken to your mobile device via USB.</string>
     <string name="add_user_ok">User has been added</string>
     <string name="share_result">Share the document and the signature</string>
     <string name="multivalued_rdn">Multiple RDN values with the same type</string>

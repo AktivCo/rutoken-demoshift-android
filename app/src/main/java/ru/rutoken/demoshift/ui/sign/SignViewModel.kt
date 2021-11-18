@@ -24,6 +24,7 @@ import ru.rutoken.demoshift.pkcs11.getSerialNumber
 import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
 import ru.rutoken.demoshift.tokenmanager.TokenManager
+import ru.rutoken.demoshift.ui.buildWaitingTokenString
 import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.BusinessRuleCase.*
 import ru.rutoken.demoshift.utils.BusinessRuleException
@@ -49,9 +50,9 @@ class SignViewModel(
 ) : ViewModel() {
     private val _status = MutableLiveData(
         Status(
-            context.getText(R.string.waiting_token),
+            context.buildWaitingTokenString(),
             false,
-            context.getDrawable(R.drawable.ic_empty)
+            context.getDrawable(R.drawable.pic_connect)
         )
     )
     val status: LiveData<Status> = _status

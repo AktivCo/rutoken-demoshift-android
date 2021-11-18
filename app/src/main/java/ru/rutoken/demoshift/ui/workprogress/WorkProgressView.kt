@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import ru.rutoken.demoshift.databinding.WorkProgressBinding
 
 class WorkProgressView : LinearLayout {
@@ -40,6 +41,7 @@ class WorkProgressView : LinearLayout {
         binding.statusTextView.text = status.message
         binding.progressBar.visibility = if (status.isProgress) View.VISIBLE else View.GONE
         binding.image.setImageDrawable(status.drawable)
+        binding.image.isVisible = status.drawable != null
     }
 
     data class Status(
