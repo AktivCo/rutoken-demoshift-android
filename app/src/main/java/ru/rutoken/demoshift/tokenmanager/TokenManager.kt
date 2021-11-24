@@ -6,47 +6,30 @@
 
 package ru.rutoken.demoshift.tokenmanager
 
-import androidx.annotation.AnyThread
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import ru.rutoken.demoshift.pkcs11.Pkcs11Launcher
 import ru.rutoken.demoshift.tokenmanager.slotevent.SlotEvent
 import ru.rutoken.demoshift.tokenmanager.slotevent.SlotEventProvider
 import ru.rutoken.demoshift.utils.BusinessRuleCase.TOO_MANY_TOKENS
 import ru.rutoken.demoshift.utils.BusinessRuleException
-import ru.rutoken.pkcs11wrapper.datatype.Pkcs11InitializeArgs
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.*
-import java.util.concurrent.CopyOnWriteArraySet
 
-
-class TokenManager(private val pkcs11Module: Pkcs11Module) :
-    SlotEventProvider.Listener,
-    DefaultLifecycleObserver {
-
+class TokenManager : SlotEventProvider.Listener, Pkcs11Launcher.Listener  {
     private val tokens = Collections.synchronizedSet<Pkcs11Token>(mutableSetOf())
-    private val listeners = CopyOnWriteArraySet<TokenListener>()
     private var waitTokenDeferred: CompletableDeferred<Pkcs11Token>? = null
 
     private lateinit var eventJob: Job
 
-    override fun onStart(owner: LifecycleOwner) {
-        pkcs11Module.initializeModule(Pkcs11InitializeArgs.Builder().setOsLockingOk(true).build())
-        with(pkcs11Module.getSlotList(true)) {
-            // If more than one token has been plugged in while the application was paused -
-            // assume it as illegal state.
-            if (size > 1)
+    override fun onPkcs11Initialized(scope: CoroutineScope, pkcs11Module: Pkcs11Module) {
+        eventJob = scope.launch {
+            val tokenSlots = withContext(Dispatchers.IO) { pkcs11Module.getSlotList(true) }
+            if (tokenSlots.size > 1)
                 waitTokenDeferred?.completeExceptionally(BusinessRuleException(TOO_MANY_TOKENS))
 
-            forEach { addToken(it.token) }
-        }
+            tokenSlots.forEach { addToken(it.token) }
 
-        eventJob = owner.lifecycleScope.launch {
             SlotEventProvider(pkcs11Module).also {
                 it.addListener(this@TokenManager)
                 it.launchEvents(this)
@@ -54,9 +37,8 @@ class TokenManager(private val pkcs11Module: Pkcs11Module) :
         }
     }
 
-    override fun onStop(owner: LifecycleOwner) {
+    override fun beforePkcs11Finalize(scope: CoroutineScope, pkcs11Module: Pkcs11Module) {
         eventJob.cancel()
-        pkcs11Module.finalizeModule()
     }
 
     override fun onSlotEvent(event: SlotEvent) {
@@ -91,19 +73,5 @@ class TokenManager(private val pkcs11Module: Pkcs11Module) :
 
     private fun removeToken(token: Pkcs11Token) {
         tokens.remove(token)
-    }
-
-    fun addTokenListener(listener: TokenListener) {
-        listeners.add(listener)
-    }
-
-    fun removeTokenListener(listener: TokenListener) {
-        listeners.remove(listener)
-    }
-
-    @AnyThread
-    interface TokenListener {
-        fun onTokenAdded(token: Token)
-        fun onTokenRemoved(token: Token)
     }
 }

@@ -8,10 +8,7 @@ package ru.rutoken.demoshift.pkcs11
 
 import com.sun.jna.Native
 import ru.rutoken.pkcs11jna.RtPkcs11
-import ru.rutoken.pkcs11wrapper.lowlevel.jna.Pkcs11JnaLowLevelFactory
 import ru.rutoken.pkcs11wrapper.main.Pkcs11BaseModule
-import ru.rutoken.pkcs11wrapper.rutoken.constant.RtPkcs11MechanismType
-import ru.rutoken.pkcs11wrapper.rutoken.constant.RtPkcs11ReturnValue
 import ru.rutoken.pkcs11wrapper.rutoken.lowlevel.jna.RtPkcs11JnaLowLevelApi
 import ru.rutoken.pkcs11wrapper.rutoken.lowlevel.jna.RtPkcs11JnaLowLevelFactory
 import ru.rutoken.pkcs11wrapper.rutoken.main.RtPkcs11Api

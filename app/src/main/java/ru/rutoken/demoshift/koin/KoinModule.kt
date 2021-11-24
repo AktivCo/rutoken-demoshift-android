@@ -14,19 +14,22 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.rutoken.demoshift.database.Database
 import ru.rutoken.demoshift.database.MIGRATION_1_2
+import ru.rutoken.demoshift.pkcs11.Pkcs11Launcher
 import ru.rutoken.demoshift.pkcs11.RtPkcs11Module
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.demoshift.ui.certificatelist.CertificateListViewModel
 import ru.rutoken.demoshift.ui.document.DocumentViewModel
 import ru.rutoken.demoshift.repository.UserRepository
 import ru.rutoken.demoshift.repository.UserRepositoryImpl
+import ru.rutoken.demoshift.ui.main.MainViewModel
 import ru.rutoken.demoshift.ui.sign.SignViewModel
 import ru.rutoken.demoshift.ui.userlist.UserListViewModel
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 
 val koinModule = module {
     single { RtPkcs11Module() } bind Pkcs11Module::class
-    single { TokenManager(get()) }
+    single { Pkcs11Launcher(get()) }
+    single { TokenManager().also { get<Pkcs11Launcher>().addListener(it) } }
     single<UserRepository> { UserRepositoryImpl(get()) }
     single {
         Room.databaseBuilder(androidContext(), Database::class.java, "demoshift_database")
@@ -42,4 +45,5 @@ val koinModule = module {
         SignViewModel(androidContext(), get(), tokenPin, documentUri, get(), userId)
     }
     viewModel { DocumentViewModel(androidContext()) }
+    viewModel { MainViewModel(get()) }
 }
