@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionName "1.2.0"
         versionCode 5
         ndk {
@@ -127,14 +127,11 @@ def copyJniLibs(String arch, String jniArch) {
     def jniLibs = "./src/main/jniLibs/$jniArch"
 
     if (new File("$rootDir/external").exists()) {
-        copyFile('librtpcsc.so', "../external/pcsc-android/android-$arch-clang/lib", jniLibs)
         copyFile('librtpkcs11ecp.so', "../external/pkcs11ecp/android-$arch/lib", jniLibs)
     } else { // SDK path
-        copyFile('librtpcsc.so', "../../../../pcsc/android-$arch/lib", jniLibs)
         copyFile('librtpkcs11ecp.so', "../../../android-$arch/lib", jniLibs)
     }
 
-    requireFileInDirectory(jniLibs, 'librtpcsc.so')
     requireFileInDirectory(jniLibs, 'librtpkcs11ecp.so')
 }
 
@@ -144,21 +141,21 @@ preBuild.doLast {
 
     if (new File("$rootDir/external").exists()) {
         copyFile('pkcs11jna*.jar', '../external/pkcs11jna/java', 'libs')
-        copyFile('rtserviceconnection*.aar', '../external/rtserviceconnection/java/', 'libs')
+        copyFile('rtpcsc*.aar', '../external/rtpcsc/java/', 'libs')
         copyFile('pkcs11wrapper*.jar', '../external/pkcs11wrapper/java/', 'libs')
     } else { // SDK path
         copyFile('pkcs11jna*.jar', "../../../../../../java/samples/pkcs11/lib", "libs")
-        copyFile('rtserviceconnection*.aar', "../../../../libs", "libs")
+        copyFile('rtpcsc*.aar', "../../../../pcsc", "libs")
         copyFile('pkcs11wrapper*.jar', "../../../../../../java/samples/pkcs11/lib", "libs")
     }
 
     requireFileInDirectory('libs', 'pkcs11jna*.jar')
-    requireFileInDirectory('libs', 'rtserviceconnection*.aar')
+    requireFileInDirectory('libs', 'rtpcsc*.aar')
     requireFileInDirectory('libs', 'pkcs11wrapper*.jar')
 }
 
 clean {
     delete fileTree('libs').matching {
-        include 'pkcs11jna*.jar', 'rtserviceconnection*.aar', 'pkcs11wrapper*.jar'
+        include 'pkcs11jna*.jar', 'rtpcsc*.aar', 'pkcs11wrapper*.jar'
     }
 }

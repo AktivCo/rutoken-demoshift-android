@@ -17,18 +17,17 @@ External dependencies are located in [Rutoken SDK](https://www.rutoken.ru/develo
 
 Required libraries:
 
-* librtpkcs11ecp.so (for following architectures: armeabi-v7a, arm64-v8a);
-* librtpcsc.so (for following architectures: armeabi-v7a, arm64-v8a);
-* rtserviceconnection\*.aar, where \* is library version (current version is '-1.1.0');
-* pkcs11jna\*.jar, where \* is library version (current version is '-1.1.4');
-* pkcs11wrapper\*.jar, where \* is library version (current version is '-2.1.0').
+* librtpkcs11ecp.so for following architectures: armeabi-v7a, arm64-v8a;
+* rtpcsc-\*.aar, where \* is library version;
+* pkcs11jna-\*.jar, where \* is library version;
+* pkcs11wrapper-\*.jar, where \* is library version.
 
 ## How to build
 
 Before building the project:
 
-* copy librtpkcs11ecp.so and librtpcsc.so libraries to `<project_root>/app/src/main/jniLibs/<arch>/`, where `<arch>` is library architecture;
-* copy rtserviceconnection\*.aar, pkcs11jna\*.jar and pkcs11wrapper\*.jar to `<project_root>/app/libs/`.
+* copy librtpkcs11ecp.so library to `<project_root>/app/src/main/jniLibs/<arch>/`, where `<arch>` is library architecture;
+* copy rtpcsc-\*.aar, pkcs11jna-\*.jar and pkcs11wrapper-\*.jar to `<project_root>/app/libs/`.
 
 Use Android Studio to build the project.
 
