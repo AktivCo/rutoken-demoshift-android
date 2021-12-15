@@ -26,7 +26,6 @@ import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
 
-
 class DocumentFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +36,10 @@ class DocumentFragment : Fragment() {
         val args: DocumentFragmentArgs by navArgs()
 
         val viewModel = getViewModel<DocumentViewModel>()
+
+        val getContentLauncher = registerForActivityResult(GetContent()) { uri: Uri? ->
+            uri?.let { viewModel.documentUri.value = it }
+        }
 
         viewModel.documentUri.observe(viewLifecycleOwner) { uri ->
             val isSupported = MimeTypeMap.getSingleton()
@@ -56,9 +59,7 @@ class DocumentFragment : Fragment() {
         }
 
         binding.selectButton.setOnClickListener {
-            registerForActivityResult(GetContent()) { uri: Uri? ->
-                uri?.let { viewModel.documentUri.value = it }
-            }.launch("*/*")
+            getContentLauncher.launch("*/*")
         }
 
         childFragmentManager.setFragmentResultListener(DIALOG_RESULT_KEY, this) { _, bundle ->
