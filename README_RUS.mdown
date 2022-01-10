@@ -21,14 +21,14 @@
 * librtpcsc.so (под следующие архитектуры: armeabi-v7a, arm64-v8a);
 * rtserviceconnection\*.aar, где \* — версия библиотеки (текущая версия '-1.1.0');
 * pkcs11jna\*.jar, где \* — версия библиотеки (текущая версия '-1.1.4');
-* pkcs11wrapper\*.jar, где \* — версия библиотеки (текущая версия '-2.1.0').
+* pkcs11wrapper\*.aar, где \* — версия библиотеки (текущая версия '-1.1.2').
 
 ## Как собрать
 
 Прежде чем собирать проект:
 
 * положите библиотеки librtpkcs11ecp.so и librtpcsc.so в папку `<project_root>/app/src/main/jniLibs/<arch>/`, где `<arch>` — архитектура библиотеки;
-* положите rtserviceconnection\*.aar, pkcs11jna\*.jar и pkcs11wrapper\*.jar в папку `<project_root>/app/libs/`.
+* положите rtserviceconnection\*.aar, pkcs11jna\*.jar и pkcs11wrapper\*.aar в папку `<project_root>/app/libs/`.
 
 Используйте Android Studio для сборки проекта.
 
