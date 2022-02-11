@@ -1,0 +1,4 @@
+version: 1.0
+content:
+  idea-format: https://scm.aktivco.ru/rutoken/dev/config/beautify-conf/-/raw/2455ea46c5b56da06f8d82b69bcd09efa06208f5/Project.xml
+  swift-format: https://scm.aktivco.ru/rutoken/dev/config/beautify-conf/-/raw/2455ea46c5b56da06f8d82b69bcd09efa06208f5/swiftlint.yml
