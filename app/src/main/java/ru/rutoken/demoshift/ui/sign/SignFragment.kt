@@ -20,7 +20,6 @@ import ru.rutoken.demoshift.ui.sign.SignFragmentDirections.toSignResultFragment
 import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
 
-
 class SignFragment : Fragment() {
     private lateinit var binding: FragmentSignBinding
 

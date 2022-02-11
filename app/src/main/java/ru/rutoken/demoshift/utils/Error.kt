@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import ru.rutoken.demoshift.R
 
-
 /**
  * Shows error in the snackbar using given errorMessage with ability to copy it.
  * @param view The view used to make the snackbar. This should be contained within the

@@ -14,7 +14,6 @@ import ru.rutoken.pkcs11wrapper.mechanism.Pkcs11Mechanism
 import ru.rutoken.pkcs11wrapper.mechanism.parameter.Pkcs11ByteArrayMechanismParams
 import ru.rutoken.pkcs11wrapper.rutoken.constant.RtPkcs11MechanismType
 
-
 sealed class Pkcs11Digest(private val session: Pkcs11Session) : Digest {
     private var isOperationInitialized = false
     abstract val mechanism: Pkcs11Mechanism

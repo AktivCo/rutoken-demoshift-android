@@ -11,7 +11,6 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.Transformations
 import ru.rutoken.demoshift.database.Database
 
-
 @AnyThread
 class UserRepositoryImpl(database: Database) : UserRepository {
     private val userDao = database.userDao()

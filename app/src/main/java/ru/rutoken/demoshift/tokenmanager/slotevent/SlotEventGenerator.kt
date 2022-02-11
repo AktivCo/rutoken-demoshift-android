@@ -13,7 +13,6 @@ import ru.rutoken.pkcs11wrapper.main.IPkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Exception
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Slot
 
-
 /**
  * Fills a [Channel] with slot events from a [IPkcs11Module.waitForSlotEvent] function.
  */

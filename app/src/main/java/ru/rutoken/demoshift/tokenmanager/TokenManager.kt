@@ -16,7 +16,7 @@ import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.*
 
-class TokenManager : SlotEventProvider.Listener, Pkcs11Launcher.Listener  {
+class TokenManager : SlotEventProvider.Listener, Pkcs11Launcher.Listener {
     private val tokens = Collections.synchronizedSet<Pkcs11Token>(mutableSetOf())
     private var waitTokenDeferred: CompletableDeferred<Pkcs11Token>? = null
 

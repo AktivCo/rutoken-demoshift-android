@@ -20,7 +20,6 @@ private const val DATABASE_NAME = "migration-test"
 private const val VERSION_1 = 1
 private const val VERSION_2 = 2
 
-
 class MigrationTest {
     @get:Rule
     val helper = MigrationTestHelper(

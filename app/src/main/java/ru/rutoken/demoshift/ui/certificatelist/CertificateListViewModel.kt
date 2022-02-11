@@ -31,7 +31,6 @@ import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11UserType
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Token
 import java.util.concurrent.ExecutionException
 
-
 typealias Certificate = User
 
 class CertificateListViewModel(
@@ -114,7 +113,6 @@ class CertificateListViewModel(
         try {
             userRepository.addUser(certificate)
             _addUserResult.value = Result.success(Unit)
-
         } catch (e: SQLiteConstraintException) {
             _addUserResult.value = Result.failure(BusinessRuleException(USER_DUPLICATES))
         }

@@ -20,7 +20,6 @@ import ru.rutoken.pkcs11wrapper.main.Pkcs11Session
 import ru.rutoken.pkcs11wrapper.manager.Pkcs11ObjectManager
 import java.util.*
 
-
 object GostObjectFinder {
     /**
      * It is supposed that the user is logged in.
@@ -93,8 +92,7 @@ object GostObjectFinder {
 
     private fun Pkcs11ObjectManager.findPublicKeys(template: List<Pkcs11Attribute>) =
         findObjectsAtOnce(Pkcs11Gost256PublicKeyObject::class.java, template) +
-                findObjectsAtOnce(Pkcs11Gost512PublicKeyObject::class.java,template)
-
+                findObjectsAtOnce(Pkcs11Gost512PublicKeyObject::class.java, template)
 
     private fun Pkcs11ObjectManager.findPrivateKeys(template: List<Pkcs11Attribute>) =
         findObjectsAtOnce(Pkcs11Gost256PrivateKeyObject::class.java, template) +

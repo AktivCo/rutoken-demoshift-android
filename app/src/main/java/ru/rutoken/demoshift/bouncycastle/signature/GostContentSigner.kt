@@ -35,7 +35,6 @@ class GostContentSigner(private val signature: Signature) : ContentSigner {
                 AlgorithmIdentifier(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
         }
 
-
     override fun getOutputStream() = digestStream
 
     override fun getSignature() = signature.sign(digestProvider.digestCalculator.digest)

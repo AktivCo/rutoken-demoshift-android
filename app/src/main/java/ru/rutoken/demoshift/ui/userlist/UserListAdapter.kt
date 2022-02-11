@@ -17,7 +17,6 @@ import ru.rutoken.demoshift.databinding.UserCardBinding
 import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.ui.userlist.UserListFragmentDirections.toDocumentFragment
 
-
 class UserListAdapter :
     RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
     private var users: SortedList<User> = SortedList(User::class.java, SortedListCallback(this))

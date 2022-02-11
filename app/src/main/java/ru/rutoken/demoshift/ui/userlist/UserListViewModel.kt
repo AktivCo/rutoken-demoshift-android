@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import ru.rutoken.demoshift.repository.User
 import ru.rutoken.demoshift.repository.UserRepository
 
-
 class UserListViewModel(private val repository: UserRepository) : ViewModel() {
     fun getUsers(): LiveData<List<User>> = repository.getUsersAsync()
 

@@ -39,7 +39,6 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 import java.util.concurrent.ExecutionException
 
-
 class SignViewModel(
     private val context: Context,
     private val tokenManager: TokenManager,

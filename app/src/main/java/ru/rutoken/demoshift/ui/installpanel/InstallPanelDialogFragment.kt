@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.rutoken.demoshift.R
 
-
 const val PCSC_PACKAGE_NAME = "ru.rutoken"
 
 class InstallPanelDialogFragment : DialogFragment() {

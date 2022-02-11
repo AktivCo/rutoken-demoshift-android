@@ -25,7 +25,6 @@ import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
 import ru.rutoken.demoshift.utils.showError
 
-
 class CertificateListFragment : Fragment() {
     private lateinit var binding: FragmentCertificateListBinding
     private lateinit var viewModel: CertificateListViewModel

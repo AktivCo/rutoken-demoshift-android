@@ -16,7 +16,6 @@ import ru.rutoken.demoshift.databinding.FragmentSignResultBinding
 import ru.rutoken.demoshift.ui.signresult.SignResultFragmentDirections.toUserListFragment
 import ru.rutoken.demoshift.utils.shareFileAndSignature
 
-
 class SignResultFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
