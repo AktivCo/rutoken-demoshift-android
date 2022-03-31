@@ -23,7 +23,7 @@ fun Throwable.asReadableText(context: Context): String? {
     return if (message != null) context.getString(message) else null
 }
 
-private val pkcs11ErrorMessages = mapOf<IPkcs11ReturnValue, @StringRes Int>(
+private val pkcs11ErrorMessages = mapOf<IPkcs11ReturnValue, /*@StringRes*/ Int>(
     Pkcs11ReturnValue.CKR_PIN_INCORRECT to R.string.pin_incorrect,
     Pkcs11ReturnValue.CKR_PIN_LOCKED to R.string.pin_locked,
     Pkcs11ReturnValue.CKR_SESSION_HANDLE_INVALID to R.string.connection_lost,
