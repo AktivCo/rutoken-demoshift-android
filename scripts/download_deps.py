@@ -1,31 +1,36 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from os import path, getcwd, remove, makedirs, listdir, chmod
-from os import name as os_name
-from urllib2 import urlopen, HTTPError, Request
 from argparse import ArgumentParser
-from re import compile, escape
-from zipfile import ZipFile
+from collections import defaultdict
 from glob import glob
-from Queue import Queue
-from threading import Thread, Lock
-from shutil import rmtree
-from urllib import urlencode
 from itertools import permutations
+from os import path, remove, makedirs, listdir, chmod
+from os import name as os_name
+from os.path import dirname, realpath, join
+from re import compile, escape
+from shutil import rmtree
+from threading import Thread, Lock
+from zipfile import ZipFile
+
+try:  # python3
+    from urllib.parse import urlencode
+    from urllib.request import urlopen, Request
+    from urllib.error import HTTPError
+    from queue import Queue
+except ImportError:  # python2
+    from urllib2 import urlopen, HTTPError, Request
+    from urllib import urlencode
+    from Queue import Queue
 
 if os_name != "nt":
     from os import symlink
 
-url_with_bins = "http://aktiv-builds/new/binary_deps"
+URL_WITH_BINS = "http://aktiv-builds/new/binary_deps"
+DEFAULT_EXTERNAL_CONFIG = join(dirname(dirname(__file__)), "external.config")
 print_lock = Lock()
 MAX_PATH_WIN = 248
 
-
-class Args(object):
-    pass
-
-args = Args()
 
 def printf(*args, **kwargs):
     with print_lock:
@@ -44,7 +49,7 @@ class Worker(Thread):
             func, args, kargs = self.tasks.get()
             try:
                 func(*args, **kargs)
-            except Exception, e:
+            except Exception as e:
                 printf(e)
             self.tasks.task_done()
 
@@ -63,8 +68,8 @@ class Threadpool:
 
 
 def is_symlink(info=None):
-    #Return true if the object ZipInfo passed in represents a symlink
-    return (info.external_attr >> 16) & 0770000 == 0120000
+    # Return true if the object ZipInfo passed in represents a symlink
+    return (info.external_attr >> 16) & 0o770000 == 0o120000
 
 
 def get_archive_list(package_url=None, dep_name=None):
@@ -76,18 +81,15 @@ def get_archive_list(package_url=None, dep_name=None):
         printf("[-] : list {0} from {1} failed (return code {2})".format(dep_name, package_url, e.code))
         return None
 
-    content = response.read().split("\0")
-    return filter(None, content)
+    buf = response.read().decode()
+    content = buf.split("\0")
+    return list(filter(None, content))
 
 
 def split_platform(platform):
-    parts = []
     platform_list = platform.split("-")
 
-    for platform_part in platform_list:
-        parts.append(platform_part.split("+"))
-
-    return parts
+    return [platform_part.split('+') for platform_part in platform_list]
 
 
 def make_extendable_pattern(parts):
@@ -100,7 +102,8 @@ def make_extendable_pattern(parts):
         for permutation in permutations(part):
             permutation_pattern = ""
             for part_variant in permutation:
-                permutation_pattern = "{0}[^-]*((?<=[\+-])|(?<=^)){1}(\+[^-]*|(?=-)|(?=$))".format(permutation_pattern, escape(part_variant))
+                permutation_pattern = "{0}[^-]*((?<=[\+-])|(?<=^)){1}(\+[^-]*|(?=-)|(?=$))".format(permutation_pattern,
+                                                                                                   escape(part_variant))
             if part_pattern != "":
                 part_pattern = "{0}|{1}".format(part_pattern, permutation_pattern)
             else:
@@ -110,24 +113,67 @@ def make_extendable_pattern(parts):
     return pattern
 
 
+def get_best_dependency(dep_matches, platform_runtime):
+    deps = defaultdict(list)
+    for match in dep_matches:
+        groups_len = len(match.groups())
+
+        runtime_version = match.group(7) if groups_len == 7 else match.group(5)
+        deps[runtime_version].append(match)
+
+    valid_runtimes = list(filter(lambda runtime: runtime <= platform_runtime,
+                                 sorted(deps.keys(), reverse=True)))
+    if len(valid_runtimes) == 0:
+        return None
+
+    return deps[valid_runtimes[0]][0].group(0)
+
+
 def search_pattern(dep_name=None, archive_list=None, platform=None, target=None):
     if not platform:
         return ["*", ".*"]
 
+    if archive_list == ["common"]:
+        return [["{0}/common/**".format(dep_name)], "common"]
+
     platform_parts = split_platform(platform)
+
+    mask_clang = "clang(\d+)v(\d+)"
+    mask_msvc = "msvc(\d+)"
 
     for i in range(len(platform_parts), 0, -1):
         platform_parts_slice = platform_parts[:i]
+        clang_match = compile(mask_clang).search(platform_parts[i - 1][0])
+        msvc_match = compile(mask_msvc).search(platform_parts[i - 1][0])
+
         if target:
             pattern = "{0}-.*{1}".format(make_extendable_pattern(platform_parts_slice), target)
-            match = filter(compile(pattern).search, archive_list)
-            if match:
-                return [map(lambda x: "{0}/{1}/**".format(dep_name, x), match), pattern]
+            matches = list(filter(compile(pattern).search, archive_list))
+            if len(matches) == 0:
+                pattern = make_extendable_pattern(platform_parts_slice)
+        else:
+            pattern = make_extendable_pattern(platform_parts_slice)
 
-        pattern = "{0}-|{0}$".format(make_extendable_pattern(platform_parts_slice))
-        match = filter(compile(pattern).search, archive_list)
-        if match:
-            return [map(lambda x: "{0}/{1}/**".format(dep_name, x), match), pattern]
+        matches = list(filter(compile(pattern).search, archive_list))
+
+        if len(matches) > 0:
+            return [["{0}/{1}/**".format(dep_name, match) for match in matches], pattern]
+        elif (clang_match is not None) or (msvc_match is not None):
+            pre_mask = make_extendable_pattern(platform_parts[:i - 1])
+            if target:
+                clang_full_mask = "{0}-{1}-.*-{2}".format(pre_mask, mask_clang, target)
+                msvc_full_mask = "{0}-{1}-.*-{2}".format(pre_mask, mask_msvc, target)
+            else:
+                clang_full_mask = "{0}-{1}-.*".format(pre_mask, mask_clang)
+                msvc_full_mask = "{0}-{1}-.*".format(pre_mask, mask_msvc)
+            clang_matches = list(filter(None, map(compile(clang_full_mask).search, archive_list)))
+            msvc_matches = list(filter(None, map(compile(msvc_full_mask).search, archive_list)))
+
+            platform_runtime = clang_match.group(2) if clang_match is not None else msvc_match.group(1)
+
+            best_dep_pattern = get_best_dependency((clang_matches + msvc_matches), platform_runtime)
+            if best_dep_pattern is not None:
+                return [["{0}/{1}/**".format(dep_name, best_dep_pattern)], best_dep_pattern]
 
     return None
 
@@ -156,7 +202,7 @@ def download_binary(package_url=None, package=None, path_to_package=None, patter
 
 
 def set_attributes(file_info, path_to_file):
-    permissions = (file_info.external_attr >> 16) & 0777
+    permissions = (file_info.external_attr >> 16) & 0o777
     if permissions:
         chmod(path_to_file, permissions)
 
@@ -191,7 +237,7 @@ def clean_folder_with_deps(path_to_package=None, external_out=None, dep_name=Non
 
     with ZipFile(path_to_package, "r") as archive:
         folder_in_archive = set([i.split("/")[1] for i in archive.namelist() if i.endswith('/')])
-        folder_in_archive = filter(None, list(folder_in_archive))
+        folder_in_archive = set(filter(None, list(folder_in_archive)))
     local_folder = [i for i in listdir(path_to_dep)]
 
     for folder in local_folder:
@@ -201,9 +247,6 @@ def clean_folder_with_deps(path_to_package=None, external_out=None, dep_name=Non
 
 def add_version_file(external_out=None, dep_name=None, revision=None):
     version_files_list = glob(path.join(external_out, dep_name, "*", "*_version"))
-    if version_files_list:
-        return
-
     for platform in glob(path.join(external_out, dep_name, "*")):
         if path.isdir(platform):
             path_to_version = path.join(platform, "{0}_version".format(dep_name))
@@ -218,11 +261,11 @@ def post_download_steps(path_to_package=None, external_out=None, dep_name=None, 
     add_version_file(external_out, dep_name, revision)
 
 
-def exist_platform_in_dep(dep_name=None, revision=None, platform=None, local_dep=None):
+def exist_platform_in_dep(force, dep_name=None, revision=None, platform=None, local_dep=None):
     if platform not in local_dep:
         return False
 
-    if args.force:
+    if force:
         return False
 
     if local_dep[platform] == revision:
@@ -231,32 +274,33 @@ def exist_platform_in_dep(dep_name=None, revision=None, platform=None, local_dep
     return False
 
 
-def worker(external_out, dep_name=None, revision=None, deps_tree=None):
+def worker(external_out, platform, target, force, dep_name=None, revision=None, deps_tree=None):
     package = "{0}-{1}.zip".format(dep_name, revision)
-    package_url = "{0}/{1}/{2}".format(url_with_bins, dep_name, package)
+    package_url = "{0}/{1}/{2}".format(URL_WITH_BINS, dep_name, package)
     path_to_package = path.join(external_out, package)
 
     archive_list = get_archive_list(package_url, dep_name)
     if not archive_list:
         return None
 
-    pattern = search_pattern(dep_name, archive_list, args.platform, args.target)
+    pattern = search_pattern(dep_name, archive_list, platform, target)
+
     if not pattern:
         return None
 
     if dep_name in deps_tree and pattern[0] != "*":
-        platforms_match_local = filter(compile(pattern[1]).search, deps_tree[dep_name].keys())
-        platforms_match_server = filter(compile(pattern[1]).search, archive_list)
-        platform_match_all = list(set(platforms_match_server + platforms_match_local))
+        platforms_match_local = set(filter(compile(pattern[1]).search, deps_tree[dep_name].keys()))
+        platforms_match_server = set(filter(compile(pattern[1]).search, archive_list))
+        platform_match_all = platforms_match_server - platforms_match_local
         for platform in platform_match_all:
-            if exist_platform_in_dep(dep_name, revision, platform, deps_tree[dep_name]):
+            if exist_platform_in_dep(force, dep_name, revision, platform, deps_tree[dep_name]):
                 continue
 
             for remote_path in pattern[0]:
                 if download_binary(package_url, package, path_to_package, remote_path):
                     post_download_steps(path_to_package, external_out, dep_name, revision)
 
-        platform_not_match = list(set(deps_tree[dep_name].keys()) - set(platforms_match_local))
+        platform_not_match = set(deps_tree[dep_name].keys()) - platforms_match_local
         for platform in platform_not_match:
             local_revision = deps_tree[dep_name][platform]
             if local_revision != revision:
@@ -269,18 +313,18 @@ def worker(external_out, dep_name=None, revision=None, deps_tree=None):
                 post_download_steps(path_to_package, external_out, dep_name, revision)
 
 
-def update(external_out, dep_name=None, revision=None, deps_tree=None):
+def update(external_out, force, dep_name=None, revision=None, deps_tree=None):
     if dep_name not in deps_tree:
         return None
 
     package = "{0}-{1}.zip".format(dep_name, revision)
-    package_url = "{0}/{1}/{2}".format(url_with_bins, dep_name, package)
+    package_url = "{0}/{1}/{2}".format(URL_WITH_BINS, dep_name, package)
     path_to_package = path.join(external_out, package)
 
     platforms = deps_tree[dep_name].keys()
     for platform in platforms:
         local_revision = deps_tree[dep_name][platform]
-        if local_revision == revision and not args.force:
+        if local_revision == revision and not force:
             printf("[*] : {0} already update for {1}".format(dep_name, platform))
         else:
             archive_list = get_archive_list(package_url, dep_name)
@@ -323,6 +367,7 @@ def get_deps_version(external_out):
             deps_tree[dep_name][platform] = version
     return deps_tree
 
+
 def check_arguments(args):
     if not args.platform and args.target:
         printf("Error, set platform argument!")
@@ -333,31 +378,37 @@ def check_arguments(args):
         exit(1)
 
 
-if __name__ == "__main__":
-    workspace = getcwd()
-    external_config = path.join(workspace, "external.config")
-    external_out = path.join(workspace, "external")
-
+def get_arguments():
     parser = ArgumentParser(description="Script for download binary dependencies, requires external.config file")
     parser.add_argument("-p", "--platform", help="Platform for binary dependencies", type=str, required=False)
-    parser.add_argument("-t", "--target", help="Target for binary dependencies: release/debug", type=str, required=False)
+    parser.add_argument("-e", "--external-config", help="Path to external.config", type=str, required=False,
+                        default=DEFAULT_EXTERNAL_CONFIG)
+    parser.add_argument("-t", "--target", help="Target for binary dependencies: release/debug", type=str,
+                        required=False)
     parser.add_argument("-u", "--update", help="Updating all binary dependencies", action="store_true", required=False)
     parser.add_argument("-c", "--check", help="Checking for available updates", action="store_true", required=False)
     parser.add_argument("-j", "--job", help="Setting maximum of threads for download dependencies", type=int,
                         required=False)
-    parser.add_argument("-f", "--force", help="Conflict version and exists packages will be replaced", action="store_true",
+    parser.add_argument("-f", "--force", help="Conflict version and exists packages will be replaced",
+                        action="store_true",
                         required=False)
 
-    args = parser.parse_args(namespace=Args)
+    return parser.parse_args()
+
+
+def main():
+    workspace = dirname(dirname(realpath(__file__)))
+    external_out = join(workspace, "external")
+
+    args = get_arguments()
 
     check_arguments(args)
-	
+
     binary_dict = {}
-    with open(external_config, "r") as config:
+    with open(args.external_config, "r") as config:
         for line in config.read().splitlines():
             dep_name, revision = line.split(" ")[0], line.split(" ")[1]
             binary_dict[dep_name] = revision
-
 
     if path.exists(external_out):
         deps_tree = get_deps_version(external_out)
@@ -383,8 +434,11 @@ if __name__ == "__main__":
     pool = Threadpool(count_thread)
     for dep_name, revision in binary_dict.items():
         if args.update:
-            pool.add_task(update, external_out, dep_name, revision, deps_tree)
+            pool.add_task(update, external_out, args.force, dep_name, revision, deps_tree)
         else:
-            pool.add_task(worker, external_out, dep_name, revision, deps_tree)
+            pool.add_task(worker, external_out, args.platform, args.target, args.force, dep_name, revision, deps_tree)
     pool.wait_completion()
 
+
+if __name__ == "__main__":
+    main()
