@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2021, Aktiv-Soft JSC. See https://download.rutoken.ru/License_Agreement.pdf.
+ * All Rights Reserved.
+ */
+
 package ru.rutoken.demoshift.ui
 
 import android.content.Context
