@@ -95,6 +95,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation 'net.java.dev.jna:jna:5.7.0@aar'
     implementation 'com.github.nsk90:kstatemachine:0.9.0'
+    implementation 'ru.rutoken:pkcs11jna:3.3.0@jar'
 
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -140,22 +141,19 @@ preBuild.doLast {
     copyJniLibs('arm64', 'arm64-v8a')
 
     if (new File("$rootDir/external").exists()) {
-        copyFile('pkcs11jna*.jar', '../external/pkcs11jna/java', 'libs')
         copyFile('rtpcsc*.aar', '../external/rtpcsc/java/', 'libs')
         copyFile('pkcs11wrapper*.jar', '../external/pkcs11wrapper/java/', 'libs')
     } else { // SDK path
-        copyFile('pkcs11jna*.jar', "../../../../../../java/samples/pkcs11/lib", "libs")
         copyFile('rtpcsc*.aar', "../../../../pcsc", "libs")
         copyFile('pkcs11wrapper*.jar', "../../../../../../java/samples/pkcs11/lib", "libs")
     }
 
-    requireFileInDirectory('libs', 'pkcs11jna*.jar')
     requireFileInDirectory('libs', 'rtpcsc*.aar')
     requireFileInDirectory('libs', 'pkcs11wrapper*.jar')
 }
 
 clean {
     delete fileTree('libs').matching {
-        include 'pkcs11jna*.jar', 'rtpcsc*.aar', 'pkcs11wrapper*.jar'
+        include 'rtpcsc*.aar', 'pkcs11wrapper*.jar'
     }
 }

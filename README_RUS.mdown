@@ -19,7 +19,6 @@
 
 * librtpkcs11ecp.so под следующие архитектуры: armeabi-v7a, arm64-v8a;
 * rtpcsc-\*.aar, где \* — версия библиотеки;
-* pkcs11jna-\*.jar, где \* — версия библиотеки;
 * pkcs11wrapper-\*.jar, где \* — версия библиотеки.
 
 ## Как собрать
@@ -27,7 +26,7 @@
 Прежде чем собирать проект:
 
 * положите библиотеку librtpkcs11ecp.so в папку `<project_root>/app/src/main/jniLibs/<arch>/`, где `<arch>` — архитектура библиотеки;
-* положите rtpcsc-\*.aar, pkcs11jna-\*.jar и pkcs11wrapper-\*.jar в папку `<project_root>/app/libs/`.
+* положите rtpcsc-\*.aar и pkcs11wrapper-\*.jar в папку `<project_root>/app/libs/`.
 
 Используйте Android Studio для сборки проекта.
 
