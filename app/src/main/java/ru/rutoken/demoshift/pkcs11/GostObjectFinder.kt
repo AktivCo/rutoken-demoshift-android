@@ -12,7 +12,6 @@ import org.bouncycastle.cert.X509CertificateHolder
 import ru.rutoken.pkcs11wrapper.`object`.certificate.Pkcs11X509PublicKeyCertificateObject
 import ru.rutoken.pkcs11wrapper.`object`.key.*
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11Attribute
-import ru.rutoken.pkcs11wrapper.attribute.Pkcs11AttributeFactory
 import ru.rutoken.pkcs11wrapper.attribute.Pkcs11ByteArrayAttribute
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11AttributeType
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11KeyPair
@@ -66,7 +65,7 @@ object GostObjectFinder {
     ): Pkcs11KeyPair<Pkcs11GostPublicKeyObject, Pkcs11GostPrivateKeyObject> {
         val publicKey = session.objectManager.findPublicKeys(
             listOf(
-                Pkcs11AttributeFactory.getInstance().makeAttribute(
+                session.objectManager.attributeFactory.makeAttribute(
                     Pkcs11AttributeType.CKA_VALUE,
                     getPublicKeyValue(certificateHolder)
                 )
