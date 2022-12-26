@@ -11,7 +11,7 @@ It also contains some useful classes for device detection and signing docs.
 Rutoken DemoShift should be built using:
 
 * Android Studio 4.0 or newer;
-* Android SDK Platform 29 or newer.
+* Android SDK Platform 31 or newer.
 
 External dependencies are located in [Rutoken SDK](https://www.rutoken.ru/developers/sdk/).
 

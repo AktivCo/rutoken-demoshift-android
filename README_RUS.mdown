@@ -11,7 +11,7 @@
 Рутокен Демосмена собирается с использованием:
 
 * Android Studio 4.0 или новее;
-* Android SDK Platform 29 или новее.
+* Android SDK Platform 31 или новее.
 
 Внешние зависимости находятся в [Рутокен SDK](https://www.rutoken.ru/developers/sdk/).
 
