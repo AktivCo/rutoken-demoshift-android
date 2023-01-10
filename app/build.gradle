@@ -101,10 +101,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.12'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
+    androidTestImplementation 'androidx.room:room-testing:2.4.3'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
 }
 
 def requireFileInDirectory(String directory, String file) {
