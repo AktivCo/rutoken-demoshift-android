@@ -11,6 +11,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import ru.rutoken.pkcs11wrapper.constant.standard.Pkcs11Flag.CKF_TOKEN_PRESENT
 import ru.rutoken.pkcs11wrapper.datatype.Pkcs11SlotInfo
+import ru.rutoken.pkcs11wrapper.lowlevel.datatype.CkSlotInfo
+import ru.rutoken.pkcs11wrapper.lowlevel.datatype.CkVersion
 import ru.rutoken.pkcs11wrapper.main.Pkcs11Module
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -46,18 +48,33 @@ class SlotEventProvider(private val pkcs11Module: Pkcs11Module) {
     private companion object {
         fun makeFakeSlotEvent(previousEvent: SlotEvent, newEvent: SlotEvent) =
             if (previousEvent.slotInfo.isTokenPresent)
-                previousEvent.copyWithFlags(
-                    previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.asLong.inv()
-                )
+                previousEvent.copyWithFlags(previousEvent.slotInfo.flags and CKF_TOKEN_PRESENT.asLong.inv())
             else
                 newEvent.copyWithFlags(newEvent.slotInfo.flags or CKF_TOKEN_PRESENT.asLong)
 
-        private fun SlotEvent.copyWithFlags(flags: Long) = SlotEvent(
-            slot, Pkcs11SlotInfo(
-                slotInfo.slotDescription, slotInfo.manufacturerId,
-                slotInfo.hardwareVersion, slotInfo.firmwareVersion, flags
-            ), isFake = true
-        )
+        private fun SlotEvent.copyWithFlags(flags: Long): SlotEvent {
+            val ckSlotInfo = object : CkSlotInfo {
+                override fun getSlotDescription() = slotInfo.slotDescription.toByteArray()
+
+                override fun getManufacturerID() = slotInfo.manufacturerId.toByteArray()
+
+                override fun getFlags() = flags
+
+                override fun getHardwareVersion() = object : CkVersion {
+                    override fun getMajor() = slotInfo.hardwareVersion.major
+
+                    override fun getMinor() = slotInfo.hardwareVersion.minor
+                }
+
+                override fun getFirmwareVersion() = object : CkVersion {
+                    override fun getMajor() = slotInfo.firmwareVersion.major
+
+                    override fun getMinor() = slotInfo.firmwareVersion.minor
+                }
+            }
+
+            return SlotEvent(slot, Pkcs11SlotInfo(ckSlotInfo), isFake = true)
+        }
     }
 
     @AnyThread
