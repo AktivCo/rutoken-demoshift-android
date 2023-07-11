@@ -26,7 +26,7 @@ except ImportError:  # python2
 if os_name != "nt":
     from os import symlink
 
-URL_WITH_BINS = "http://aktiv-builds/new/binary_deps"
+URL_WITH_BINS = "https://builds.aktivco.ru/new/binary_deps"
 DEFAULT_EXTERNAL_CONFIG = join(dirname(dirname(__file__)), "external.config")
 print_lock = Lock()
 MAX_PATH_WIN = 248
