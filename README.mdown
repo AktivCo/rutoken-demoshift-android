@@ -2,7 +2,7 @@
 
 ## Description
 
-Rutoken DemoShift is a demo application which shows use cases of [Rutoken ECP Series](https://www.rutoken.ru/products/all/rutoken-ecp/)
+Rutoken DemoShift is a demo application which shows use cases of [Rutoken ECP Series](https://www.rutoken.ru/products/all/rutoken-ecp-3/)
 security tokens and smart cards (including wireless devices) for a workgroup with a single mobile device.
 It also contains some useful classes for device detection and signing docs.
 
