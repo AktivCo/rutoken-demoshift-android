@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.rutoken.demoshift">
 
+    <queries>
+        <package android:name="ru.rutoken" />
+    </queries>
+
     <application
         android:name=".ui.main.DemoshiftApplication"
         android:allowBackup="true"

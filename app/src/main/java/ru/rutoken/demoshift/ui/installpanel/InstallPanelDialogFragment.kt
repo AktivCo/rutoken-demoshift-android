@@ -5,10 +5,14 @@
 
 package ru.rutoken.demoshift.ui.installpanel
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -44,10 +48,23 @@ class InstallPanelDialogFragment : DialogFragment() {
     }
 }
 
+@Suppress("DEPRECATION")
+@SuppressLint("QueryPermissionsNeeded")
 fun isRutokenPanelInstalled(activity: FragmentActivity): Boolean {
-    val application = activity.packageManager.getInstalledApplications(0).firstOrNull {
-        it.packageName == PCSC_PACKAGE_NAME
+    val packageManager = activity.packageManager
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(PCSC_PACKAGE_NAME, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                packageManager.getPackageInfo(PCSC_PACKAGE_NAME, 0)
+            }
+            true
+        } catch (e: NameNotFoundException) {
+            false
+        }
+    } else {
+        val application = packageManager.getInstalledApplications(0).firstOrNull { it.packageName == PCSC_PACKAGE_NAME }
+        application != null
     }
-
-    return application != null
 }
