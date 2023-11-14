@@ -8,7 +8,7 @@ package ru.rutoken.demoshift.repository
 
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import ru.rutoken.demoshift.database.Database
 
 @AnyThread
@@ -20,7 +20,7 @@ class UserRepositoryImpl(database: Database) : UserRepository {
     override suspend fun getUsers() = userDao.getUsers().map { makeUser(it) }
 
     @MainThread
-    override fun getUsersAsync() = Transformations.map(userDao.getUsersAsync()) { userEntityList ->
+    override fun getUsersAsync() = userDao.getUsersAsync().map { userEntityList ->
         userEntityList.map { makeUser(it) }
     }
 

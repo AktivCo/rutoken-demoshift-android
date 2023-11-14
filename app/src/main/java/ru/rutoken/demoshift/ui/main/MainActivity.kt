@@ -11,8 +11,6 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.rutoken.demoshift.databinding.ActivityMainBinding
 import ru.rutoken.demoshift.pkcs11.Pkcs11Launcher
-import ru.rutoken.demoshift.ui.installpanel.InstallPanelDialogFragment
-import ru.rutoken.demoshift.ui.installpanel.isRutokenPanelInstalled
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
@@ -24,12 +22,5 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = getViewModel()
         lifecycle.addObserver(get<Pkcs11Launcher>())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!isRutokenPanelInstalled(this)) {
-            InstallPanelDialogFragment().show(supportFragmentManager, null)
-        }
     }
 }
