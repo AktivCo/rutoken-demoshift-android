@@ -50,4 +50,5 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="reader_added">Подключено устройство %s</string>
     <string name="reader_removed">Отключено устройство %s</string>
+    <string name="ask_bluetooth_permission">Для работы с Рутокен Bluetooth необходимо разрешить подключение к устройствам</string>
 </resources>
