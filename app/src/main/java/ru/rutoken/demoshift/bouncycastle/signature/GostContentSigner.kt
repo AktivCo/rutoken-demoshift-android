@@ -28,11 +28,13 @@ class GostContentSigner(private val signature: Signature) : ContentSigner {
     override fun getAlgorithmIdentifier() =
         when (signature) {
             is GostR3410_2001Signature ->
-                AlgorithmIdentifier(CryptoProObjectIdentifiers.gostR3410_2001)
+                AlgorithmIdentifier(CryptoProObjectIdentifiers.gostR3411_94_with_gostR3410_2001)
+
             is GostR3410_2012_256Signature ->
-                AlgorithmIdentifier(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
+                AlgorithmIdentifier(RosstandartObjectIdentifiers.id_tc26_signwithdigest_gost_3410_12_256)
+
             is GostR3410_2012_512Signature ->
-                AlgorithmIdentifier(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
+                AlgorithmIdentifier(RosstandartObjectIdentifiers.id_tc26_signwithdigest_gost_3410_12_512)
         }
 
     override fun getOutputStream() = digestStream
