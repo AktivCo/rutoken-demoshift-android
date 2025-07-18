@@ -12,24 +12,21 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.rutoken.demoshift.databinding.FragmentDocumentBinding
 import ru.rutoken.demoshift.ui.document.DocumentFragmentDirections.toSignFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
-import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
 
 class DocumentFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentDocumentBinding.inflate(inflater)
         val args: DocumentFragmentArgs by navArgs()
@@ -37,20 +34,25 @@ class DocumentFragment : Fragment() {
         val viewModel = getViewModel<DocumentViewModel>()
 
         val getContentLauncher = registerForActivityResult(GetContent()) { uri: Uri? ->
-            uri?.let { viewModel.documentUri.value = it }
+            uri?.let { viewModel.updateDocument(it) }
         }
 
-        viewModel.documentUri.observe(viewLifecycleOwner) { uri ->
-            val isSupported = MimeTypeMap.getSingleton()
-                .getExtensionFromMimeType(requireContext().contentResolver.getType(uri)) == "pdf"
+        viewModel.isDocumentPdf.observe(viewLifecycleOwner) { isSupported ->
+            if (isSupported) viewModel.renderPdfDocument(resources.displayMetrics.densityDpi)
 
-            if (isSupported)
-                binding.documentPdfView.fromUri(uri)
-                    .scrollHandle(DefaultScrollHandle(requireContext()))
-                    .load()
-
-            binding.documentPdfView.visibility = if (isSupported) VISIBLE else GONE
+            binding.documentPdfRecyclerView.visibility = if (isSupported) VISIBLE else GONE
             binding.unsupportedFileSelected.visibility = if (isSupported) GONE else VISIBLE
+        }
+
+        viewModel.documentPdfBitmaps.observe(viewLifecycleOwner) { bitmaps ->
+            DocumentPdfAdapter().also { adapter ->
+                binding.documentPdfRecyclerView.adapter = adapter
+                bitmaps.forEach { adapter.addPdfPageBitmap(it) }
+            }
+        }
+
+        viewModel.navigationArguments.observe(viewLifecycleOwner) { navArgs ->
+            findNavController().navigate(toSignFragment(navArgs.pin, args.userId, navArgs.documentUri))
         }
 
         binding.signButton.setOnClickListener {
@@ -62,13 +64,7 @@ class DocumentFragment : Fragment() {
         }
 
         childFragmentManager.setFragmentResultListener(DIALOG_RESULT_KEY, this) { _, bundle ->
-            findNavController().navigate(
-                toSignFragment(
-                    checkNotNull(bundle.getString(PIN_KEY)),
-                    args.userId,
-                    viewModel.documentUri.value!!
-                )
-            )
+            viewModel.handleFragmentResult(bundle)
         }
 
         return binding.root
