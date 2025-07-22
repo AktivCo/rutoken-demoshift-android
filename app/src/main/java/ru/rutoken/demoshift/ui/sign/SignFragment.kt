@@ -16,6 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentSignBinding
+import ru.rutoken.demoshift.ui.applyTopInset
 import ru.rutoken.demoshift.ui.sign.SignFragmentDirections.toSignResultFragment
 import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
@@ -29,6 +30,8 @@ class SignFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSignBinding.inflate(inflater)
+
+        binding.toolbarLayout.toolbar.applyTopInset()
 
         return binding.root
     }

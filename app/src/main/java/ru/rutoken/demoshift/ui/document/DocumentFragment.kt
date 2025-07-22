@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import ru.rutoken.demoshift.databinding.FragmentDocumentBinding
+import ru.rutoken.demoshift.ui.applyTopInset
 import ru.rutoken.demoshift.ui.document.DocumentFragmentDirections.toSignFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
@@ -36,6 +37,8 @@ class DocumentFragment : Fragment() {
         val getContentLauncher = registerForActivityResult(GetContent()) { uri: Uri? ->
             uri?.let { viewModel.updateDocument(it) }
         }
+
+        binding.toolbarLayout.toolbar.applyTopInset()
 
         viewModel.isDocumentPdf.observe(viewLifecycleOwner) { isSupported ->
             if (isSupported) viewModel.renderPdfDocument(resources.displayMetrics.densityDpi)

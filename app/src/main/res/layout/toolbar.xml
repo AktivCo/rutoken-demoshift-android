@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/rutoken"
+        android:paddingVertical="20dp"
         app:srcCompat="@drawable/logo" />
 
 </com.google.android.material.appbar.MaterialToolbar>

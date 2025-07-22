@@ -20,6 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentCertificateListBinding
+import ru.rutoken.demoshift.ui.applyTopInset
 import ru.rutoken.demoshift.ui.certificatelist.CertificateListFragmentDirections.toUserListFragment
 import ru.rutoken.demoshift.ui.workprogress.WorkProgressView.Status
 import ru.rutoken.demoshift.utils.asReadableText
@@ -41,6 +42,7 @@ class CertificateListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCertificateListBinding.inflate(inflater)
+        binding.toolbarLayout.toolbar.applyTopInset()
         binding.certificatesRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)

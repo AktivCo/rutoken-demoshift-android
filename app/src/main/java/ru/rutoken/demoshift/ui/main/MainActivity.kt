@@ -14,12 +14,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.ActivityMainBinding
 import ru.rutoken.demoshift.pkcs11.Pkcs11Launcher
+import ru.rutoken.demoshift.ui.applyBottomInset
 
 class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModel()
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.root.applyBottomInset()
 
         lifecycle.addObserver(get<Pkcs11Launcher>())
 

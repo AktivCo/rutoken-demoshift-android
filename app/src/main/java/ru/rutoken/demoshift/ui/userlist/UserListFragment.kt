@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.databinding.FragmentUserListBinding
+import ru.rutoken.demoshift.ui.applyTopInset
 import ru.rutoken.demoshift.ui.launchCustomTabsUrl
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.DIALOG_RESULT_KEY
@@ -84,6 +85,7 @@ class UserListFragment : Fragment() {
                     else -> false
                 }
             }
+            applyTopInset()
         }
     }
 

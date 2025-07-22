@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ru.rutoken.demoshift.databinding.FragmentSignResultBinding
+import ru.rutoken.demoshift.ui.applyTopInset
 import ru.rutoken.demoshift.ui.signresult.SignResultFragmentDirections.toUserListFragment
 import ru.rutoken.demoshift.utils.shareFileAndSignature
 
@@ -25,6 +26,7 @@ class SignResultFragment : Fragment() {
         val binding = FragmentSignResultBinding.inflate(inflater)
         val args: SignResultFragmentArgs by navArgs()
 
+        binding.toolbarLayout.toolbar.applyTopInset()
         binding.shareButton.setOnClickListener {
             startActivity(shareFileAndSignature(args.documentUri, args.signature, requireContext()))
         }
