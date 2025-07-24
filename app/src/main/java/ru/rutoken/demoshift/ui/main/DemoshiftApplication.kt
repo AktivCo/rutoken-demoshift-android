@@ -14,7 +14,9 @@ import ru.rutoken.demoshift.R
 import ru.rutoken.demoshift.koin.koinModule
 import ru.rutoken.demoshift.tokenmanager.TokenManager
 import ru.rutoken.rtpcscbridge.RtPcscBridge
+import ru.rutoken.rttransport.InitParameters
 import ru.rutoken.rttransport.RtTransport
+import ru.rutoken.rttransport.TokenInterface.*
 
 class DemoshiftApplication : Application() {
     private val readerListObserver = object : RtTransport.PcscReaderObserver {
@@ -35,10 +37,12 @@ class DemoshiftApplication : Application() {
             androidContext(this@DemoshiftApplication)
             modules(koinModule)
         }
+
         RtPcscBridge.enableDebugLogs()
         RtPcscBridge.setAppContext(this)
         RtPcscBridge.getTransport().addPcscReaderObserver(readerListObserver)
-        RtPcscBridge.getTransportExtension().attachToLifecycle(this)
+        val initParameters = InitParameters.Builder().setEnabledTokenInterfaces(USB, NFC, BLUETOOTH).build()
+        RtPcscBridge.getTransportExtension().attachToLifecycle(this, true, initParameters)
         get<TokenManager>()
     }
 }
