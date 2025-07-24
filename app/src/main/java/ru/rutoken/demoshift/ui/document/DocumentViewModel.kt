@@ -27,27 +27,23 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.rutoken.demoshift.ui.pin.PinDialogFragment.Companion.PIN_KEY
+import ru.rutoken.demoshift.utils.MutableSingleLiveEvent
 import java.io.File
 import java.io.InputStream
 import java.util.UUID
 
 class DocumentViewModel(private val appContext: Context) : ViewModel() {
     @Volatile
-    private var currentDocumentUri: Uri
+    private var currentDocumentUri: Uri = createDefaultDocumentAssetUri()
 
-    private val _isDocumentPdf: MutableLiveData<Boolean> = MutableLiveData()
-    val isDocumentPdf: LiveData<Boolean> by ::_isDocumentPdf
+    private val _isDocumentPdf: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isDocumentPdf: LiveData<Boolean> get() = _isDocumentPdf
 
     private val _documentPdfBitmaps: MutableLiveData<List<Bitmap>> = MutableLiveData()
-    val documentPdfBitmaps: LiveData<List<Bitmap>> by ::_documentPdfBitmaps
+    val documentPdfBitmaps: LiveData<List<Bitmap>> get() = _documentPdfBitmaps
 
-    private val _navigationArguments: MutableLiveData<SignFragmentNavigationArgs> = MutableLiveData()
-    val navigationArguments: LiveData<SignFragmentNavigationArgs> by ::_navigationArguments
-
-    init {
-        currentDocumentUri = createDefaultDocumentAssetUri()
-        _isDocumentPdf.value = true
-    }
+    private val _navigationArguments: MutableSingleLiveEvent<SignFragmentNavigationArgs> = MutableSingleLiveEvent()
+    val navigationArguments: LiveData<SignFragmentNavigationArgs> get() = _navigationArguments
 
     fun updateDocument(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
