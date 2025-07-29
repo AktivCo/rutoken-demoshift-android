@@ -12,7 +12,7 @@ integration with Rutokens, see [documentation](https://github.com/AktivCo/androi
 
 ## Requirements
 
-Rutoken DemoShift should be built using Android SDK Platform 34 or newer.
+Rutoken DemoShift should be built using Android SDK Platform 36 or newer.
 
 External dependencies are located in [Rutoken SDK](https://www.rutoken.ru/developers/sdk/).
 
