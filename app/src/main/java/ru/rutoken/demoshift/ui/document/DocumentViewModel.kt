@@ -50,7 +50,7 @@ class DocumentViewModel(private val appContext: Context) : ViewModel() {
             val isDocumentPdf = MimeTypeMap.getSingleton()
                 .getExtensionFromMimeType(appContext.contentResolver.getType(uri)) == "pdf"
 
-            if (isDocumentPdf) currentDocumentUri = uri
+            currentDocumentUri = uri
             _isDocumentPdf.postValue(isDocumentPdf)
         }
     }
